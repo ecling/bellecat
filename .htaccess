@@ -8,10 +8,12 @@
 
 ############################################
 RewriteEngine on
+
 #RewriteCond %{THE_REQUEST} ^.*/en
 #RewriteRule ^(.*)en$ http://www.yourdbellecatleomain.com/$1 [R=301,L]
 #RewriteRule ^en/(admin|user)($|/) - [L]
 #RewriteRule ^en/(.*) $1 [R=301,QSA,L]
+
 ## GoDaddy specific options
 
 #   Options -MultiViews
