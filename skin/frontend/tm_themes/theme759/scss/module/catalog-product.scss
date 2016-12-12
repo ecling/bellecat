@@ -27,6 +27,18 @@
  * ============================================ */
 @import "../includes";
 
+@include bp(max-width, $bp-medium) {
+    .catalog-product-view{
+        .breadcrumbs {
+            display: block;
+            margin: 0 15px;
+            .product{
+                display: none;
+            }
+        }
+    }
+}
+
 .product-view {
   .product-essential {
 

@@ -119,7 +119,7 @@
     display: block;
     position: relative;
     clear: both;
-    margin-top: 33px;
+    margin-top: 8px;
     .skip-link {
       &:before {
         @include custom-icon($icon: '\e13d');
