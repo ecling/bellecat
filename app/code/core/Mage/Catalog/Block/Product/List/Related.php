@@ -71,10 +71,9 @@ class Mage_Catalog_Block_Product_List_Related extends Mage_Catalog_Block_Product
             ->joinLeft(array('oi'=>'sales_flat_order_item'),
                 "oi.product_id=e.entity_id and oi.created_at>'".$date."'",
                 'SUM(oi.qty_ordered) as hot')
+            ->where('oi.created_at>"'.$date.'"')
             ->group('e.entity_id')
-            ->order('hot DESC')
-            ;
-        
+            ->order('hot DESC');
         
         if (Mage::helper('catalog')->isModuleEnabled('Mage_Checkout')) {
             Mage::getResourceSingleton('checkout/cart')->addExcludeProductFilter($this->_itemCollection,
@@ -87,7 +86,7 @@ class Mage_Catalog_Block_Product_List_Related extends Mage_Catalog_Block_Product
         Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);
 
         $this->_itemCollection->setPageSize(12)->load();
-
+        
         foreach ($this->_itemCollection as $product) {
             $product->setDoNotUseCategoryId(true);
         }

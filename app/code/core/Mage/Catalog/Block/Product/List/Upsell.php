@@ -66,6 +66,7 @@ class Mage_Catalog_Block_Product_List_Upsell extends Mage_Catalog_Block_Product_
             ->joinLeft(array('oi'=>'sales_flat_order_item'),
                 "oi.product_id=e.entity_id and oi.created_at>'".$date."'",
                 'SUM(oi.qty_ordered) as hot')
+            ->where('oi.created_at>"'.$date.'"')
             ->group('e.entity_id')
             ->order('hot DESC')
             ;
