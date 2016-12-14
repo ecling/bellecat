@@ -20,9 +20,9 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
         
         $productsOrdered=array();//array($productId=>array("name"=>$name,'sku'=>$sku,'items'=>array(array("color"=>$color,'size'=>$size,'qty'=>$qty))););
         
-        foreach($orderCollection as $order)
-        {
-            foreach($order->getAllVisibleItems() as $item)
+        //foreach($orderCollection as $order)
+        //{
+            foreach($orderCollection as $item)
             {
 
                 $optionsArr=$this->_initBuyOptionsArr($item);
@@ -32,8 +32,8 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
                 $productId=$item->getProductId();
 
                
-                $color=$orderHelper->getAttrTextFromOrderItem($item,"Color");
-                $size=$orderHelper->getAttrTextFromOrderItem($item,"Size");
+                //$color=$orderHelper->getAttrTextFromOrderItem($item,"Color");
+                //$size=$orderHelper->getAttrTextFromOrderItem($item,"Size");
                 
                 //$qty = $item->getQtyOrdered() - max($item->getQtyShipped(), $item->getQtyInvoiced()) - $item->getQtyCanceled();
                 $qty = $item->getQtyOrdered();
@@ -45,6 +45,7 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
                     $productsOrdered[$productId]['name']=$name;
                     $productsOrdered[$productId]['sku']=$sku;
                     $productsOrdered[$productId]['optionTitles']=array_keys($optionsArr);
+                    $productsOrdered[$productId]['image'] = $item->getImage();
                 }
                 if(!$productsOrdered[$productId]['items'][$unitKey]){
                    // $productsOrdered[$productId]['items'][$unitKey]=array('color'=>$color,'size'=>$size,'qty'=>$qty);
@@ -55,7 +56,7 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
                 }
                 
             }
-        }
+        //}
         return $this->sortOptions($productsOrdered);
     }
     
@@ -193,7 +194,7 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
                 $this->_minZoneColsNum=max($this->_minZoneColsNum,count($titles));
         }
     }
-    public function exportToExcel(Mage_Sales_Model_Resource_Order_Collection $collection,$filename)
+    public function exportToExcel($collection,$filename)
     {
        $folderPath=$this->_exportTo();
        $file=$this->_generateFile($folderPath,$filename);
@@ -282,7 +283,7 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
 
                 //写img
                      //to do
-                $img=$this->_productImgPath($productId);
+                $img=$this->_productImgPath($productOrdered['image']);
                 if(file_exists($img))
                 {
                     $objDrawing = new PHPExcel_Worksheet_Drawing();
@@ -415,8 +416,9 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
         return 'martinexport';
     }
     
-    protected function _productImgPath($productId)
+    protected function _productImgPath($imgUrl)
     {
+        /*
         $product=Mage::getModel('catalog/product')->load($productId);   
         $gallery=$product->getMediaGalleryImages();
         foreach($gallery as $_image)
@@ -424,10 +426,12 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
             $imgUrl=(string)Mage::helper('catalog/image')->init($product, 'thumbnail', $_image->getFile())->resize($this->_imgSize());
             break;
         }
+        */
         //$imgUrl=Mage::helper('catalog/image')->init($product, 'small_image');
         if($imgUrl)
         {
             $mediaUrl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+            $imgUrl = $mediaUrl.'catalog/product'.$imgUrl;
             $mediarDir=Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
             $imgPath=str_replace($mediaUrl, $mediarDir.DS, $imgUrl);
             $imgPath=str_replace('/',DS,$imgPath);
