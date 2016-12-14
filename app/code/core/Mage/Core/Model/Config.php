@@ -1225,6 +1225,7 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
         }
 
         $config = $this->_xml->global->{$groupType.'s'}->{$group};
+        
 
         // First - check maybe the entity class was rewritten
         $className = null;
