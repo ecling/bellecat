@@ -48,7 +48,22 @@ class Mage_Catalog_Block_Product_List_Upsell extends Mage_Catalog_Block_Product_
     protected $_itemCollection;
 
     protected $_itemLimits = array();
-
+	
+	
+	protected function _construct()
+	{
+		$product_id = Mage::registry('current_product')->getId();
+		$key = Mage::app()->getStore()->getId().'-upsell-'.$product_id;
+		$this->addData(array(
+			'cache_lifetime' => 360000000, 
+			'cache_tags' => array("mg_product_view_page_" .$key),
+			'cache_key' => $key,
+		));
+		
+		parent::_construct();
+	}
+	
+	
     protected function _prepareData()
     {
         $product = Mage::registry('product');
