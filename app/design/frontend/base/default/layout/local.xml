@@ -287,7 +287,7 @@
 					<action method="setTitle" translate="value"><value>Tags</value></action>
 				</block>
 
-				<block type="catalog/product_viewother" name="catalog.product.video" template="catalog/product/view/video.phtml">
+				<block type="catalog/product_view" name="catalog.product.video" template="catalog/product/view/video.phtml">
 					<action method="addToParentGroup"><group>detailed_info</group></action>
 					<action method="setTitle" translate="value"><value>Video</value></action>
 				</block>

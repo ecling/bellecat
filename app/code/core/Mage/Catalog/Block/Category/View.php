@@ -33,7 +33,22 @@
  */
 class Mage_Catalog_Block_Category_View extends Mage_Core_Block_Template
 {
-    protected function _prepareLayout()
+    
+	protected function _construct()
+    {
+		$layer = Mage::getSingleton('catalog/layer');
+		$Category = $layer->getCurrentCategory();
+		$currentCatId= $Category ->getId();
+
+          $this->addData(array(
+            'cache_lifetime'    => 360000000,
+            'cache_tags'        => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),
+			'cache_key'      	=> Mage::app()->getStore()->getId().'-'.$currentCatId,
+		));
+    }
+	
+	
+	protected function _prepareLayout()
     {
         parent::_prepareLayout();
 

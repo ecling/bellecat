@@ -42,7 +42,20 @@ class Mage_Catalog_Block_Product_List_Related extends Mage_Catalog_Block_Product
     protected $_mapRenderer = 'msrp_noform';
 
     protected $_itemCollection;
-
+	
+	protected function _construct()
+	{
+		$product_id = Mage::registry('current_product')->getId();
+		$key = Mage::app()->getStore()->getId().'-relate-'.$product_id;
+		$this->addData(array(
+			'cache_lifetime' => 360000000, 
+			'cache_tags' => array("mg_product_view_page_" .$key),
+			'cache_key' => $key,
+		));
+		
+		 parent::_construct();
+	}
+	
     protected function _prepareData()
     {
         $product = Mage::registry('product');
