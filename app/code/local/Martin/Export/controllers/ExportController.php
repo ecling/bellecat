@@ -39,17 +39,32 @@ class Martin_Export_ExportController extends Mage_Core_Controller_Front_Action
                     $filename="purchase-list-$startDate-$endDate.xlsx";
                     $helper=Mage::helper('martinexport/order');
 
-
+                    /*
                     $orderCollection=Mage::getModel('sales/order')->getCollection();
                     $orderCollection->addFieldToFilter('created_at',array('from'=>$startDate,'to'=>$endDateTime))
                             ->addFieldToFilter('status','processing');
                     if($stores){
                         $orderCollection->addFieldToFilter('store_id',array('in'=>$stores));
                     }
+                    */
+                    
+                    //直接根据时间获取产品数据
+                    $collection = Mage::getResourceModel('sales/order_item_collection')
+                        ->join(array('o'=>'sales/order'),'o.entity_id=main_table.order_id','')
+                        ->addFieldToFilter('o.created_at',array('from'=>$startDate,'to'=>$endDateTime))
+                        ->addFieldToFilter('o.status','processing')
+                        ;
+                    
+                    $collection->getSelect()
+                        ->join(array('p'=>'catalog_product_entity_varchar'),'p.entity_id=main_table.product_id AND p.attribute_id=85 AND p.store_id=0','value as image');
+                    
+                    if($stores){
+                        $collection->addFieldToFilter('store_id',array('in'=>$stores));
+                    }
 
                     $helper->setExcelValue("A1","时间段");
                     $helper->setExcelValue("B1","$startDate ~ $endDate");
-                    $href=$helper->exportToExcel($orderCollection,$filename);
+                    $href=$helper->exportToExcel($collection,$filename);
                     echo <<<html
                     <div style="text-align:center"> <a href='{$href}'> 点击下载{$filename}</a> </div>
 html;

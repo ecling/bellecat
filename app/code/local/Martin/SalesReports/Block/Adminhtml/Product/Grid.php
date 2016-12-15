@@ -11,13 +11,17 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
     
     protected function _prepareCollection()
     {
-        $collection = Mage::getResourceModel('sales/order_item_collection')
+        $collection = Mage::getResourceModel('salesreports/order_item_collection')
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('qty_ordered')
-            ->addAttributeToSelect('created_at')
-            ->addAttributeToSort('qty_ordered','desc'); 
-
+            ->addAttributeToSelect('created_at'); 
+            
+        $collection->getSelect()
+            ->columns("sum(qty_ordered) as num")
+            ->order('num desc')
+            ->group('product_id');
+        
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -37,7 +41,7 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
         
         $this->addColumn('qty_ordered', array(
             'header'    => Mage::helper('customer')->__('Ordered Qty'),
-            'index'     => 'qty_ordered',
+            'index'     => 'num',
             'type'      => 'number'
         ));
 

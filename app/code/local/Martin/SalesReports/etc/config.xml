@@ -20,8 +20,12 @@
         <models>
             <salesreports>
                 <class>Martin_SalesReports_Model</class>
-                <resourceModel>blog_mysql4</resourceModel>
+                <resourceModel>salesreports_resource</resourceModel>
             </salesreports>
+            <salesreports_resource>
+                <class>Martin_SalesReports_Model_Resource</class>
+                <deprecatedNode>salesreports_mysql4</deprecatedNode>
+            </salesreports_resource>
         </models>
         <blocks>
             <salesreports>
