@@ -52,6 +52,7 @@ class Olark_Chatbox_Block_Chatbox
      */
     protected function _toHtml()
     {
+        return true;
         function formatPrice($value) {
             return Mage::helper('core')->currency(
                 $value,

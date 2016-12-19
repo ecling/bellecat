@@ -8,7 +8,7 @@
  * of patent rights can be found in the PATENTS file in the code directory.
  */
 
-if (!class_exists('FacebookAdsToolbox')) {
+//if (!class_exists('FacebookAdsToolbox')) {
   class FacebookAdsToolbox {
 
     const LOGFILE = 'facebook_ads_extension.log';
@@ -251,4 +251,4 @@ if (!class_exists('FacebookAdsToolbox')) {
         self::$fbTimezones['unknown'];
     }
   }
-}
+//}
