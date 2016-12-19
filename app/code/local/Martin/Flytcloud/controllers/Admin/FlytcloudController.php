@@ -2,6 +2,12 @@
 
 class Martin_Flytcloud_Admin_FlytcloudController extends Mage_Adminhtml_Controller_Action
 {
+    /**
+     * 数据库更新：
+     * insert into `bellecat`.`flytcloud_shipping_status` ( `entity_id`, `shipping_status` ) values (  '',  'Processing' )
+     * insert into `bellecat`.`flytcloud_shipping_status` ( `entity_id`, `shipping_status` ) values (  '',  'Failed' )
+     * 
+     */
     public function submitOrderAction()
     {
         try {
