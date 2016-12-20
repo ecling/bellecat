@@ -59,7 +59,7 @@ class Martin_Export_ExportController extends Mage_Core_Controller_Front_Action
                         ->join(array('p'=>'catalog_product_entity_varchar'),'p.entity_id=main_table.product_id AND p.attribute_id=85 AND p.store_id=0','value as image');
                     
                     if($stores){
-                        $collection->addFieldToFilter('store_id',array('in'=>$stores));
+                        $collection->addFieldToFilter('o.store_id',array('in'=>$stores));
                     }
 
                     $helper->setExcelValue("A1","时间段");
