@@ -16,6 +16,10 @@ class Martin_SalesReports_Adminhtml_Salesreports_ProductController extends Mage_
         
         $this->renderLayout();
     }
+    public function viewAction(){
+        $this->loadLayout();
+        $this->renderLayout();
+    }
     protected function _isAllowed(){
         return Mage::getSingleton('admin/session')->isAllowed('admin/salesreports/product');
     }

@@ -128,6 +128,22 @@ class Mage_Adminhtml_Sales_OrderController extends Mage_Adminhtml_Controller_Act
             $this->renderLayout();
         }
     }
+    
+    /**
+     * Edit Order
+     */
+    public function editAction(){
+        $this->_title($this->__('Sales'))->_title($this->__('Eidt Order'));
+        $order = $this->_initOrder();
+        if ($order) {
+            
+            $this->_initAction();
+
+            $this->_title(sprintf("#%s", $order->getRealOrderId()));
+
+            $this->renderLayout();     
+        }
+    }
 
     /**
      * Notify user

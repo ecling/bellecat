@@ -87,6 +87,7 @@
     <div class="entry-edit">
         <div class="entry-edit-head">
             <h4 class="icon-head head-products"><?php echo Mage::helper('sales')->__('Items Ordered') ?></h4>
+            <div style="float:right"><a href="<?php echo $this->getUrl('*/*/edit/',array('order_id'=>$this->getOrder()->getId())) ?>">Edit</a></div>
         </div>
     </div>
     <?php echo $this->getItemsHtml() ?>

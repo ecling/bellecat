@@ -12,10 +12,31 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel('salesreports/order_item_collection')
+            ->addAttributeToSelect('product_id')
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('qty_ordered')
             ->addAttributeToSelect('created_at'); 
+            
+        if($store = $this->getRequest()->getParam('store')){
+            $collection->addAttributeToFilter('store_id',$store);     
+        }
+        
+        if($from = $this->helper('salesreports')->getParam('from')){
+            $from = DateTime::createFromFormat('m/d/Y',$from);
+            $from = $from->format('Y-m-d');
+        }else{
+            $from = date('Y-m-d',time()-3600*24*7);
+        }
+        
+        if($to = $this->helper('salesreports')->getParam('to')){
+            $to = DateTime::createFromFormat('m/d/Y',$to);
+            $to = $to->format('Y-m-d');
+        }else{
+            $to  = date('Y-m-d',time());
+        }
+        
+        $collection->addAttributeToFilter('created_at',array('from'=>$from,'to'=>$to));
             
         $collection->getSelect()
             ->columns("sum(qty_ordered) as num")
@@ -50,11 +71,11 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
                 'header'    =>  Mage::helper('customer')->__('Action'),
                 'width'     => '100',
                 'type'      => 'action',
-                'getter'    => 'getId',
+                'getter'    => 'getProductId',
                 'actions'   => array(
                     array(
-                        'caption'   => Mage::helper('customer')->__('Edit'),
-                        'url'       => array('base'=> '*/*/edit'),
+                        'caption'   => Mage::helper('customer')->__('View'),
+                        'url'       => array('base'=> '*/*/view'),
                         'field'     => 'id'
                     )
                 ),
