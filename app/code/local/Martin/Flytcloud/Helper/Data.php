@@ -138,9 +138,9 @@ class Martin_Flytcloud_Helper_Data extends Mage_Core_Helper_Abstract
             {
                 if($this->_recordSuccess($successResponse,$order))
                 {
-                    $trackId=$this->_logTrack($successResponse,$order);
+                    //$trackId=$this->_logTrack($successResponse,$order);
                     //$this->_informCustomer($successResponse,$order);
-                    if($trackId)
+                    if($successResponse->getData('Message')=='上传成功')
                     {
                         $shippingType=Mage::helper('flytcloud/shippingtype')->getShippingTypeByOrder($order);
                         //$track=array('carrier_code'=>'custom','number'=>$trackId,'title'=>$shippingType->getData('shipping_type_code'));
