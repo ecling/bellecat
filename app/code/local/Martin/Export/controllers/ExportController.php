@@ -62,8 +62,8 @@ class Martin_Export_ExportController extends Mage_Core_Controller_Front_Action
                         $collection->addFieldToFilter('o.store_id',array('in'=>$stores));
                     }
                     
-                    print_r((string)$collection->getSelect());
-                    exit();
+                    //print_r((string)$collection->getSelect());
+                    //exit();
                     
                     $helper->setExcelValue("A1","时间段");
                     $helper->setExcelValue("B1","$startDate ~ $endDate");
