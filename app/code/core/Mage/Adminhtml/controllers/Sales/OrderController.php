@@ -144,6 +144,14 @@ class Mage_Adminhtml_Sales_OrderController extends Mage_Adminhtml_Controller_Act
             $this->renderLayout();     
         }
     }
+    
+    /**
+     * 保存订单产品编辑
+     */
+    public function saveAction(){   
+        $postData = $this->getRequest()->getParam();
+        var_dump($postData);
+    }
 
     /**
      * Notify user

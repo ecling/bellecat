@@ -39,11 +39,20 @@ class Mage_Catalog_Block_Category_View extends Mage_Core_Block_Template
 		$layer = Mage::getSingleton('catalog/layer');
 		$Category = $layer->getCurrentCategory();
 		$currentCatId= $Category ->getId();
-
-          $this->addData(array(
+		$request = Mage::app()->getRequest();
+		$p = $request->getParam('p');
+		$p = $p ? $p : 1;
+		$dir = $request->getParam('dir');
+		$order = $request->getParam('order');
+		$mode = $request->getParam('mode');
+		$limit = $request->getParam('limit');
+		
+		$currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
+		$str = $p.'_'.$dir.'_'.$order.'_'.$mode.'_'.$limit.'_'.$currency_code;
+        $this->addData(array(
             'cache_lifetime'    => 360000000,
             'cache_tags'        => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),
-			'cache_key'      	=> Mage::app()->getStore()->getId().'-'.$currentCatId,
+			'cache_key'      	=> Mage::app()->getStore()->getId().'-'.$currentCatId.$str,
 		));
     }
 	

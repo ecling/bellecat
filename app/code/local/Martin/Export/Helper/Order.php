@@ -418,8 +418,8 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
     
     protected function _productImgPath($imgUrl)
     {
-        /*
-        $product=Mage::getModel('catalog/product')->load($productId);   
+        $product=Mage::getModel('catalog/product'); 
+        /*  
         $gallery=$product->getMediaGalleryImages();
         foreach($gallery as $_image)
         {
@@ -427,11 +427,10 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
             break;
         }
         */
-        //$imgUrl=Mage::helper('catalog/image')->init($product, 'small_image');
+        $imgUrl=Mage::helper('catalog/image')->init($product, 'thumbnail',$imgUrl)->resize(90);
         if($imgUrl)
         {
             $mediaUrl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
-            $imgUrl = $mediaUrl.'catalog/product'.$imgUrl;
             $mediarDir=Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
             $imgPath=str_replace($mediaUrl, $mediarDir.DS, $imgUrl);
             $imgPath=str_replace('/',DS,$imgPath);
