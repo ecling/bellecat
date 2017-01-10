@@ -52,7 +52,7 @@ class Martin_Export_ExportController extends Mage_Core_Controller_Front_Action
                     $collection = Mage::getResourceModel('sales/order_item_collection')
                         ->join(array('o'=>'sales/order'),'o.entity_id=main_table.order_id','')
                         ->addFieldToFilter('o.created_at',array('from'=>$startDate,'to'=>$endDateTime))
-                        ->addFieldToFilter('o.status','processing')
+                        ->addFieldToFilter('o.status',array('in'=>array('processing','complete')))
                         ;
                     
                     $collection->getSelect()
@@ -62,8 +62,8 @@ class Martin_Export_ExportController extends Mage_Core_Controller_Front_Action
                         $collection->addFieldToFilter('o.store_id',array('in'=>$stores));
                     }
                     
-                    print_r((string)$collection->getSelect());
-                    exit();
+                    //print_r((string)$collection->getSelect());
+                    //exit();
                     
                     $helper->setExcelValue("A1","时间段");
                     $helper->setExcelValue("B1","$startDate ~ $endDate");

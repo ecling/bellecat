@@ -740,7 +740,7 @@ Mage::log($config, null, 'cko.log', true);
             }
 
             $order->save();
-
+            $order->sendNewOrderEmail();
             $cart = Mage::getSingleton('checkout/cart');
             $cart->truncate()->save();
 
