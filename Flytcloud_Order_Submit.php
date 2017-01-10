@@ -6,7 +6,7 @@ $helper=Mage::helper('flytcloud');
 
 $collection = Mage::getResourceModel('flytcloud/order_shipping_status_collection')
     ->addFieldToFilter('shipping_status',array('eq'=>'3'))
-    ->setPageSize(5)
+    ->setPageSize(30)
     ->load();
 
 try{
@@ -20,5 +20,5 @@ try{
         }
     }
 }catch(Extractor $e){
-    
+
 }
