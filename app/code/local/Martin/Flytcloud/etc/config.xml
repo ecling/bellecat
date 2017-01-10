@@ -95,24 +95,31 @@
                 </observers>
             </order_update_load_to_shipper_success>
         </events>
+        <!--<rewrite>
+            <flytcloud_url>
+                <from><![CDATA[#/track-my-order#]]></from>
+                <to>/flytcloud/track/index</to>
+                <complete>1</complete>
+            </flytcloud_url>
+        </rewrite>-->
     </global>
     <frontend>
+        <layout>
+            <updates>
+                <flytcloud>
+                    <file>ftlycloud.xml</file>
+                </flytcloud>
+            </updates>
+        </layout>
         <routers>
-            <ftlycloud>
+            <flytcloud>
                 <use>standard</use>
                 <args>
                     <module>Martin_Flytcloud</module>
                     <frontName>flytcloud</frontName>
                 </args>
-            </ftlycloud>
+            </flytcloud>
         </routers>
-<!--        <layout>
-            <updates>
-                <auto>
-                    <file>qiguai.xml</file>
-                </auto>
-            </updates>
-        </layout>-->
     </frontend>
     <adminhtml>
         <layout>
