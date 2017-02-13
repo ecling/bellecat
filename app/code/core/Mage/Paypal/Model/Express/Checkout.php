@@ -476,7 +476,8 @@ class Mage_Paypal_Model_Express_Checkout
             $billingAddress = $quote->getBillingAddress();
         }
         $exportedBillingAddress = $this->_api->getExportedBillingAddress();
-        $this->_setExportedAddressData($billingAddress, $exportedBillingAddress);
+        //取消根据paypal账户地址
+        //$this->_setExportedAddressData($billingAddress, $exportedBillingAddress);
         $billingAddress->setCustomerNotes($exportedBillingAddress->getData('note'));
         $quote->setBillingAddress($billingAddress);
 

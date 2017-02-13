@@ -70,7 +70,7 @@
     <div class="grid" id="order-items_grid">
         <table cellspacing="0" class="data order-tables">
             <col />
-            <col width="100" />
+            <col width="200" />
             <col width="100" />
             <col width="40"  />
             <col width="100" />
@@ -118,7 +118,25 @@
                             <?php endif; ?>
                         </td>
                         <td class="a-center v-middle">
-                            <?php echo $this->getConfigureButtonHtml($_item) ?>
+                            <?php //echo $this->getConfigureButtonHtml($_item) ?>
+                            <br />
+                            <?php 
+                                $_product = $_item->getProduct();
+                                $options = $_product->getOptions();
+                                
+                                $buy_options = $_item->getProductOptions();
+                                $buy_options = $buy_options['info_buyRequest']['options'];
+                            ?>
+                            <?php foreach($options as $option): ?>
+                            <span><?php echo $option->getTitle() ?>:</span>
+                            <select name="item[<?php echo $_item->getId()?>][options][<?php echo $option->getId() ?>]">
+                                <?php foreach ($option->getValues() as $_value): ?>
+                                <option<?php echo ($_value->getId()==$buy_options[$option->getId()])?' selected="selected"':''?> value="<?php echo $_value->getId() ?>"><?php echo $_value->getTitle() ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <br />
+                            <br />
+                            <?php endforeach; ?>
                         </td>
                         <td class="price">
 
@@ -426,7 +444,7 @@
         <col width="50%" />
         <tr>
             <td class="a-left"><small><?php echo $this->getInclExclTaxMessage(); ?></small></td>
-            <td class="a-right"><?php echo $this->getButtonHtml($this->helper('sales')->__('Update Items and Qty\'s'),'order.itemsUpdate()'); ?></td>
+            <td class="a-right"><?php echo $this->getButtonHtml($this->helper('sales')->__('Update Items and Qty\'s'),'order.submit()'); ?></td>
         </tr>
     </table>
     <br />
