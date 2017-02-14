@@ -65,4 +65,9 @@ class Martin_Flytcloud_Admin_FlytcloudController extends Mage_Adminhtml_Controll
         }
        $this->_redirect('*/sales_order/index');
     }
+    
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/flytcloud');
+    }
 }

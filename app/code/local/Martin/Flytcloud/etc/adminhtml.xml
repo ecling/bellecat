@@ -84,6 +84,22 @@
                             </config>
                         </children>
                     </system>
+                    <sales translate="title" module="sales">
+                        <children>
+                            <order translate="title">
+                                <children>
+                                    <actions translate="title">
+                                        <children>
+                                            <flytcloud translate="title">
+                                                <title>submit to shipper</title>
+                                                <sort_order>100</sort_order>
+                                            </flytcloud>
+                                        </children>
+                                    </actions>
+                                </children>
+                            </order>
+                        </children>
+                    </sales>
                 </children>
             </admin>
         </resources>

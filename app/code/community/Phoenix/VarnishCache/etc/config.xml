@@ -116,6 +116,13 @@
                                         </varnishcache>
                                     </children>
                                 </config>
+                                <cache>
+                                    <children>
+                                        <varnishcache>
+                                            <title>Clean Varnish Cache</title>
+                                        </varnishcache>
+                                    </children>
+                                </cache>
                             </children>
                         </system>
                     </children>
@@ -285,6 +292,14 @@
                     </varnishcache>
                 </observers>
             </wishlist_add_product>
+            <directory_currency_switch>
+                <observers>
+                    <varnishcache>
+                        <class>varnishcache/observer</class>
+                        <method>disablePageCachingPermanent</method>
+                    </varnishcache>
+                </observers>
+            </directory_currency_switch>
         </events>
     </frontend>
     <default>
