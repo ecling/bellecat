@@ -148,15 +148,15 @@
             <block type="adminhtml/template" template="sales/order/create/js.phtml" name="create" />
         </reference>
         <reference name="root">
-            <block type="adminhtml/sales_order_create" name="content">
-                <block type="adminhtml/sales_order_create_form" template="sales/order/create/form.phtml" name="form">
+            <block type="adminhtml/sales_order_edit" name="content">
+                <block type="adminhtml/sales_order_edit_form" template="sales/order/create/form.phtml" name="form">
                     <block type="adminhtml/sales_order_create_messages" name="message" />
                     <block type="adminhtml/sales_order_create_data" template="sales/order/edit/data.phtml" name="data">
                         <block type="adminhtml/sales_order_create_search" template="sales/order/create/abstract.phtml" name="search">
                             <block type="adminhtml/sales_order_create_search_grid" name="grid" />
                         </block>
-                        <block type="adminhtml/sales_order_Edit_items" template="sales/order/create/items.phtml" name="items">
-                            <block type="adminhtml/sales_order_Edit_items_grid" template="sales/order/edit/items/grid.phtml" name="items_grid">
+                        <block type="adminhtml/sales_order_edit_items" template="sales/order/create/items.phtml" name="items">
+                            <block type="adminhtml/sales_order_edit_items_grid" template="sales/order/edit/items/grid.phtml" name="items_grid">
                             </block>
                         </block>
                         <block type="core/text_list" name="order_item_extra_info"></block>

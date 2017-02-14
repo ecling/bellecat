@@ -44,6 +44,11 @@ $addressFields = '';
     for ($_i=1, $_n=$this->helper('customer/address')->getStreetLines(); $_i<=$_n; $_i++){
 
     		$addressFields .= '<input type="text" title="'.$this->__('Street Address '.$_i).'" name="billing[street][]" id="billing:street'.$_i.'" value="'.$this->htmlEscape($this->getStreet($_i)).'" class="'.(($_i == 1)? 'required-entry ' : '').'input-text onestepcheckout-address-line" />';
+                
+            if($_i==1){
+                $addressFields .= '<div class="validation-advice" id="advice-address" style="display:none">'.$this->__("Note: You didn't write the house number!").'</div>';
+            }    
+                
             $addressFields .= (($_i != $this->helper('customer/address')->getStreetLines()) ? '<br/>': '');
     }
     $billingFields['street'] = '

@@ -149,8 +149,59 @@ class Mage_Adminhtml_Sales_OrderController extends Mage_Adminhtml_Controller_Act
      * 保存订单产品编辑
      */
     public function saveAction(){   
-        $postData = $this->getRequest()->getParam();
-        var_dump($postData);
+        $postData = $this->getRequest()->getParams();
+        $items = $postData['item'];
+        
+        foreach($items as $item_id=>$_item){
+            $order_item = Mage::getModel('sales/order_item')->load($item_id);
+            $buy_options = $order_item->getProductOptions();
+            
+            $order_id = $order_item->getOrderId();
+            
+            //$product_options['info_buyRequest']['options'] = $_item['options'];
+            $product = $order_item->getProduct();
+            $product_options = $product->getOptions();
+            
+            $new_options = array();
+            
+            foreach($product_options as $_option){
+                $values = $_option->getValues();
+                $option_value = $_item['options'][$_option->getId()];
+                $value = $values[$option_value];
+                $new_options[] = array('label'=>$_option->getTitle(),
+                    'value'=>$value->getTitle(),
+                    'print_value'=>$_option->getTitle(),
+                    'option_id'=>$_option->getId(),
+                    'option_type'=>$_option->getType(),
+                    'option_value'=>$option_value,
+                    'custom_view'=>false
+                );
+            }
+            
+            $buy_options['info_buyRequest']['options'] = $_item['options'];
+            
+            $buy_options['options'] = $new_options;
+            
+            $order_item->setProductOptions($buy_options)
+                ->save();
+        }
+        
+        $this->_redirect('*/sales_order/view', array('order_id' => $order_id));
+    }
+    
+    /**
+     * 
+     */
+    public function loadBlockAction(){
+       $postData = $this->getRequest()->getParams();
+       $items = $postData['item'];
+       foreach($items as $item_id=>$item){
+            if($item['configured']==1){
+                $order_item = Mage::getModel('sales/order_item')->load($item_id);
+                $order_item->setProductOptions($item['options'])
+                    ->save(); 
+            }
+       }
     }
 
     /**

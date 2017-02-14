@@ -773,6 +773,30 @@ if($$('div.input-error').length > 0) {
 </script>
 <?php endif; ?>
 
+<script type="text/javascript">
+    var validateHouseNumber = function(){
+        var address1 = $('billing:street1');
+        var address2 = $('billing:street2');
+        var address = address1.value+' '+address2.value;
+        var reg = /\d+/;
+        
+        var errorMsg = "Note: You didn't write the house number!";
+        var advice = '<div class="validation-advice" id="advice-address" style="display:none">'+Translator.translate(errorMsg)+'</div>';
+        
+        if(!reg.test(address)){
+            if(!$('advice-address')){
+                Element.insert(address1, {'after': advice});
+            }
+            $('advice-address').show();
+            return false;
+        }else{
+            if($('advice-address')){
+                $('advice-address').hide();
+            }
+            return true;
+        }
+    }
+</script>
 
 <script type="text/javascript">
 
@@ -795,7 +819,7 @@ document.observe('dom:loaded', function() {
            // First validate the form
             var form = new VarienForm('onestepcheckout-form');
 
-            if(!form.validator.validate())  {
+            if(!form.validator.validate() || !validateHouseNumber())  {
                 Event.stop(e);
             }
             else    {

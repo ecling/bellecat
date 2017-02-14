@@ -45,5 +45,6 @@
 "Shipping address","Shipping address"
 "How did you hear about us?","How did you hear about us?"
 "Please choose","Please choose",
-"Other","Other",
-"Please specify:"
+"Other","Other",""
+"Please specify:",""
+"Note: You didn't write the house number!","Note: You didn't write the house number!"
