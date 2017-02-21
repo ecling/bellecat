@@ -180,9 +180,14 @@ class Mage_Adminhtml_Sales_OrderController extends Mage_Adminhtml_Controller_Act
             
             $buy_options['info_buyRequest']['options'] = $_item['options'];
             
+            $buy_options['info_buyRequest']['qty'] = $_item['qty'];
+            
+            $qty = $_item['qty'];
+            
             $buy_options['options'] = $new_options;
             
             $order_item->setProductOptions($buy_options)
+                ->setQtyOrdered($qty)
                 ->save();
         }
         
