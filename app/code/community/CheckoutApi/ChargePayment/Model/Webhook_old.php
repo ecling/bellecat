@@ -47,19 +47,6 @@ class CheckoutApi_ChargePayment_Model_Webhook
     }
 
     /**
-     * For authorise order
-     *
-     * @param $response
-     * @return bool
-     *
-     * @version 20161212
-    */
-    public function authoriseOrder($response){
-        return true;
-    }
-
-
-    /**
      * For capture order
      *
      * @param $response
@@ -68,11 +55,13 @@ class CheckoutApi_ChargePayment_Model_Webhook
      * @version 20151116
      */
     public function captureOrder($response) {
+
         $trackId    = (string)$response->message->trackId;
         $modelOrder = Mage::getModel('sales/order');
         $order      = $modelOrder->loadByIncrementId($trackId);
         $orderId    = $order->getId();
         $qty        = $order->getData('total_qty_ordered');
+        
         $chargeMode = $response->message->chargeMode;
 
         if (!$orderId || empty($qty)) {
@@ -86,7 +75,7 @@ class CheckoutApi_ChargePayment_Model_Webhook
         if (!empty($chargeIsCaptured)) {
             return false;
         }
-
+        
         if (Mage::getSingleton('core/session')->getData('checkout_api_capture_' . $trackId)) {
             return false;
         }
@@ -122,7 +111,7 @@ class CheckoutApi_ChargePayment_Model_Webhook
 
             $order->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING);
             $order->save();
-
+            
             //付款成功增加邮件发送
             $order->sendNewOrderEmail();
 
@@ -140,6 +129,7 @@ class CheckoutApi_ChargePayment_Model_Webhook
                 $invoice->setTransactionId((string)$response->message->id);
                 $invoice->save();
             }
+            
         } catch (Mage_Core_Exception $e) {
             Mage::log($e->getMessage(), null, self::LOG_FILE);
         }
@@ -365,12 +355,7 @@ class CheckoutApi_ChargePayment_Model_Webhook
                 ->registerVoidNotification()
             ;
 
-            $isCancelledOrderCard   = Mage::getModel('chargepayment/creditCard')->getVoidStatus();
-            $isCancelledOrderJs     = Mage::getModel('chargepayment/creditCardJs')->getVoidStatus();
-            $isCancelledOrderKit    = Mage::getModel('chargepayment/creditCardKit')->getVoidStatus();
-            $isCancelledOrderHosted = Mage::getModel('chargepayment/hosted')->getVoidStatus();
-
-            $isCancelledOrder        = $isCancelledOrderCard || $isCancelledOrderJs || $isCancelledOrderKit || $isCancelledOrderHosted ? true : false;
+            $isCancelledOrder = Mage::getModel('chargepayment/creditCard')->getVoidStatus();
 
             if ($isCancelledOrder) {
                 $order->setStatus('canceled');
@@ -636,3 +621,5 @@ class CheckoutApi_ChargePayment_Model_Webhook
         );
     }
 }
+
+
