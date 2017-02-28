@@ -65,5 +65,91 @@
     <div class="buttons-set">
     <button type="button" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue Shopping')) ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
 </div>
+<?php
+$order = Mage::getModel('sales/order')->loadByIncrementId($this->getOrderId());
+$total = $order->getGrandTotal();
+$shipping = $order->getShippingAmount();
+$tax = $order->getTaxAmount();
+$store = Mage::app()->getStore();
+$name = $store->getName();
+
+$items = $order->getAllItems();
+$item_details = array() ;
+foreach($items as $item) {
+$det = array() ;
+$det['sku'] = $item->getSku() ;
+$det['name'] = $item->getName() ;
+$det['category'] = get_category_name($item->getProductId()) ;
+$det['price'] = $item->getPrice() ;
+$det['quantity'] = number_format($item->getQtyOrdered(), 0) ; 
+array_push($item_details, $det) ; 
+
+}
+
+function get_category_name($productId) { 
+$product = Mage::getModel('catalog/product')->load($productId);
+$category_name = "" ;
+$cats = $product->getCategoryIds();
+
+$cnt = 0 ;
+foreach ($cats as $category_id) {
+$_cat = Mage::getModel('catalog/category')->load($category_id) ;
+$cnt++ ;
+if($cnt == count($cats)) 
+$category_name.=$_cat->getName() ;
+else 
+$category_name.=$_cat->getName()."," ; 
+} 
+return $category_name ; 
+}
+
+function getItemJs(&$transId, &$item) {
+return <<<HTML
+ga('ecommerce:addItem', {
+'id': '$transId',
+'name': '{$item['name']}',
+'sku': '{$item['sku']}',
+'category': '{$item['category']}',
+'price': '{$item['price']}',
+'quantity': '{$item['quantity']}'
+});
+HTML;
+}
+
+?>
+<script type="text/javascript">
+
+ga('require', 'ecommerce', 'ecommerce.js'); // Load GA ecommerce plug-in.
+ga('ecommerce:addTransaction', {
+'id': '<?php echo $this->getOrderId(); ?>', // Transaction ID. Required
+'affiliation': '<?php echo $name ?>', // Affiliation or store name
+'revenue': '<?php echo $total; ?>', // Grand Total
+'shipping': '<?php echo $shipping; ?>', // Shipping
+'tax': '<?php echo $tax; ?>' // Tax
+});
+// to get items
+<?php
+foreach ($item_details as &$item) {
+echo getItemJs($this->getOrderId(), $item);
+}
+?>
+ga('ecommerce:send');
+</script>
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','//connect.facebook.net/en_US/fbevents.js');
+
+fbq('init', '604365679718155');
+fbq('track', "PageView");
+fbq('track', 'Purchase', {value: '1.00', currency: 'USD'});
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=604365679718155&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel Code -->
 
 
