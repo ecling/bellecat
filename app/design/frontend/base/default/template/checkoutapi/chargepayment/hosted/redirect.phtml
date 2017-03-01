@@ -18,6 +18,21 @@
     <input name="contextId" id="contextId" value="<?php echo $params['contextId'] ?>"/>
     <input name="billingDetails" id="billingDetails"/>
 </form>
+
+<script type="text/javascript">
+    <?php if($params['contextId']): ?>
+    ga('require', 'ecommerce', 'ecommerce.js');
+    <?php $_order = Mage::getModel('sales/order')->loadByIncrementId($params['contextId']);?>
+    ga('ecommerce:addTransaction', { 'id': '<?php echo $_order->getData('entity_id')?>', 'affiliation': '<?php echo Mage::app()->getStore()->getName() ?>', 'revenue': '<?php echo $_order->getGrandTotal()?>', 'shipping': '<?php echo $_order->getShippingInclTax()?>', 'tax': '<?php echo  $_order->getTaxAmount()?>', 'currency': '<?php echo $_order->getOrderCurrencyCode();?>'});
+    <?php foreach($_order->getAllVisibleItems() as $_item): ?>
+    <?php if($_item->getParentItem()) continue; ?>
+    ga('ecommerce:addItem', {'id': '<?php echo $_order->getData('entity_id') ?>', 'name': '<?php echo str_replace('\'','', $_item->getName()) ?>', 'sku': '<?php echo $_item->getSku() ?>', 'price': '<?php echo $_item->getPrice() ?>', 'quantity': '<?php echo (int) $_item->getQtyOrdered() ?>'});
+    <?php endforeach;?>
+    ga('ecommerce:send');
+    <?php endif; ?>
+</script>
+
+
 <script>
     (function () {
         var config = {
@@ -37,19 +52,4 @@
 
         document.getElementById('payment-form').submit();
     }());
-</script>
-
-
-<!--  GA订单统计 -->
-<script type="text/javascript">
-<?php if($params['contextId']): ?>
-ga('require', 'ecommerce', 'ecommerce.js');
-<?php $_order = Mage::getModel('sales/order')->loadByIncrementId($params['contextId']);?>
-ga('ecommerce:addTransaction', { 'id': '<?php echo $_order->getData('entity_id')?>', 'affiliation': '<?php echo Mage::app()->getStore()->getName() ?>', 'revenue': '<?php echo $_order->getGrandTotal()?>', 'shipping': '<?php echo $_order->getShippingInclTax()?>', 'tax': '<?php echo  $_order->getTaxAmount()?>', 'currency': '<?php echo $_order->getOrderCurrencyCode();?>'});
-<?php foreach($_order->getAllVisibleItems() as $_item): ?>
-<?php if($_item->getParentItem()) continue; ?>
-ga('ecommerce:addItem', {'id': '<?php echo $_order->getData('entity_id') ?>', 'name': '<?php echo str_replace('\'','', $_item->getName()) ?>', 'sku': '<?php echo $_item->getSku() ?>', 'price': '<?php echo $_item->getPrice() ?>', 'quantity': '<?php echo (int) $_item->getQtyOrdered() ?>'});
-<?php endforeach;?>
-ga('ecommerce:send');
-<?php endif; ?>
 </script>
