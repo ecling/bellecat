@@ -150,17 +150,22 @@ class Martin_Flytcloud_Helper_Data extends Mage_Core_Helper_Abstract
                         Mage::dispatchEvent("order_update_load_to_shipper_success",array('order'=>$order,'tracks'=>array($track)));
                     }
                 }
-            } 
-            return true;
+                return true;
+            }else{
+                return false;
+            }
         } catch (Martin_Flytcloud_Model_Exception_UploadFailed $ex) {
                 Mage::log($ex->getMessage(),null,'flytcloud_upload.log');
-                return "\r\n order ".$orderNum." Upload failed!";
+                return false;
+                //return "\r\n order ".$orderNum." Upload failed!";
           }catch(Martin_Flytcloud_Model_Exception_Record $ex){
                 Mage::log($ex->getMessage(),null,'flytcloud_record_status.log');
-                return "\r\n order ".$orderNum." Upload Success,but record into Magento system failed!";
+                return false;
+                //return "\r\n order ".$orderNum." Upload Success,but record into Magento system failed!";
           }catch(Martin_Flytcloud_Model_Exception_NoticeOfTrack $ex){
                Mage::log($ex->getMessage(),null,'flytcloud_track_notice.log');
-               return "\r\n order ".$orderNum." Upload Success,but send email to customer failed!";
+               return false;
+               //return "\r\n order ".$orderNum." Upload Success,but send email to customer failed!";
           }
     }
     
