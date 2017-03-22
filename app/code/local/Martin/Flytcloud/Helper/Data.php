@@ -109,6 +109,8 @@ class Martin_Flytcloud_Helper_Data extends Mage_Core_Helper_Abstract
         try{
             $xml = $this->_generateRequestXml($order);
             $Api=Mage::getModel('flytcloud/apiclient');
+            Mage::log($order->getIncrementId(),null,'test.log');
+            Mage::log($xml,null,'test.log');
             $response=$Api->callWebServer($xml);
 
             if($this->_isUploadSuccess($response))
