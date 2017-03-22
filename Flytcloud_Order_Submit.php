@@ -12,14 +12,18 @@ $collection = Mage::getResourceModel('flytcloud/order_shipping_status_collection
 
 try{
     foreach($collection as $_item){
-        if($_item->getFlytcloudOrderId()||$_item->getShippingStatus()==5){
+        $fly_order_result = $adapter->query("select * from flytcloud_order_shipping_status where `order`=".$_item->getOrder());
+        $fly_order = $fly_order_result->fetch();
+        
+        if($fly_order['flytcloud_order_id']||$fly_order['shipping_status']==5){
             continue;
         }
+        
         $where = 'id='.$_item->getId();
         $adapter->update('flytcloud_order_shipping_status',array('shipping_status'=>5),$where);
         $order = Mage::getModel('sales/order')->load($_item->getOrder());
         if($helper->isSameAddress($order)){
-            Mage::log($_item->getOrder(),null,'fly_submmit.log');
+            Mage::log($order->get(),null,'fly_submmit.log');
             $submit = $helper->submitOrderToFlytcloud($order);
             if(!$submit){
                 $adapter->update('flytcloud_order_shipping_status',array('shipping_status'=>3),$where);
