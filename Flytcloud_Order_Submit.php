@@ -23,7 +23,7 @@ try{
         $adapter->update('flytcloud_order_shipping_status',array('shipping_status'=>5),$where);
         $order = Mage::getModel('sales/order')->load($_item->getOrder());
         if($helper->isSameAddress($order)){
-            Mage::log($order->get(),null,'fly_submmit.log');
+            Mage::log($order->getIncrementId(),null,'fly_submmit.log');
             $submit = $helper->submitOrderToFlytcloud($order);
             if(!$submit){
                 $adapter->update('flytcloud_order_shipping_status',array('shipping_status'=>3),$where);
