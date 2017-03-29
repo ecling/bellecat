@@ -60,9 +60,6 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         }
 
         switch ($eventType) {
-            case CheckoutApi_ChargePayment_Model_Webhook::EVENT_TYPE_CHARGE_SUCCEEDED:
-                $result = $modelWebhook->authoriseOrder($data);
-                break;
             case CheckoutApi_ChargePayment_Model_Webhook::EVENT_TYPE_CHARGE_CAPTURED:
                 $result = $modelWebhook->captureOrder($data);
                 break;
@@ -108,6 +105,7 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
             }
 
             $result = $modelWebhook->authorizeByPaymentToken($responseToken);
+            $order = Mage::getModel('sales/order')->loadByIncrementId($result['order_increment_id']);
 
             if ($result['is_admin'] === false) {
                 $redirectUrl    = 'checkout/onepage/success';
@@ -117,7 +115,6 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                     Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
 
                     if(!is_null($result['order_increment_id'])){
-                        $order = Mage::getModel('sales/order')->loadByIncrementId($result['order_increment_id']);
                         $order->cancel();
                         $order->addStatusHistoryComment('Order has been cancelled.');
                         $order->save();
@@ -126,10 +123,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                         $helper->restoreQuoteSession($order);
                     }
 
-                    $order->sendNewOrderEmail();
                     $this->_redirectUrl($redirectUrl);
                     return;
                 }
+                
+                $order->sendNewOrderEmail();
                 $this->_redirect($redirectUrl);
             }
 
@@ -250,6 +248,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                     ->setHostedPaymentConfig(NULL)
                     ->setSecretKey(NULL);
 
+                /*如果订单成功，则发送订单确认邮件*/
+                if($order->getStatus()=='processing'){
+                    $order->sendNewOrderEmail();
+                }
+
                 $this->_redirect($result['redirect']);
                 break;
             case '3d':
@@ -261,6 +264,7 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                 $this->_redirectUrl($result['redirect']);
                 break;
             case 'error':
+            default:
                 Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
                 $order->cancel();
                 $order->addStatusHistoryComment('Order has been cancelled.');
@@ -270,13 +274,6 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                 $helper->restoreQuoteSession($order);
 
                 $this->_redirectUrl($result['redirect']);
-                break;
-            default:
-                Mage::getSingleton('core/session')->addError('Something went wrong. Kindly contact us for more details.');
-                /* Restore quote session */
-                $helper->restoreQuoteSession($order);
-
-                $this->_redirectUrl(Mage::helper('checkout/url')->getCheckoutUrl());
                 break;
         }
 

@@ -334,7 +334,7 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
             'billingDetails'    => $billingAddressConfig,
             'shippingDetails'   => $shippingAddressConfig,
             'products'          => $products,
-            'customerIp'        => $ip,
+            'customerIp'        => $ip,//Mage::helper('core/http')->getRemoteAddr(),
             'metadata'          => array(
                 'server'            => Mage::helper('core/http')->getHttpUserAgent(),
                 'quoteId'           => $this->_getQuote()->getId(),
@@ -345,6 +345,10 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
                 'time'              => Mage::getModel('core/date')->date('Y-m-d H:i:s')
             )
         );
+
+
+Mage::log($config, null, 'cko.log', true);
+
 
         $autoCapture = 'n';
 
@@ -657,11 +661,6 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
         $amount = $Api->valueToDecimal($price, $priceCode);
         $config = $session->getHostedPaymentConfig();
 
-        if(empty($config)){
-            Mage::log('Empty config', null, $this->_code.'.log');
-            return false;
-        }
-
         $config['postedParam']['trackId']   = $order->getIncrementId();
         $config['postedParam']['cardToken'] = $cardToken;
 
@@ -742,7 +741,6 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
 
             $order->save();
             $order->sendNewOrderEmail();
-            
             $cart = Mage::getSingleton('checkout/cart');
             $cart->truncate()->save();
 
