@@ -120,6 +120,10 @@ class Martin_Flytcloud_Helper_Order extends Mage_Core_Helper_Abstract
         $address=$this->_getAddressObj();
         return $address->getData('telephone');
     }
+    
+    protected function _getPackType(){
+        return 'Package';
+    }
 
     protected function _getRemark ()
     {
@@ -300,6 +304,7 @@ protected function _getSignFlag()
                         'Zip'=>self::FIELD_ASSIGNMENT,
                         'Phone'=>self::FIELD_ASSIGNMENT,
                         'Remark'=>self::FIELD_ASSIGNMENT,
+                        'PackType'=>self::FIELD_ASSIGNMENT,
                         'PackInfo1'=>self::FIELD_NOT_ASSIGNMENT,
                         'PackInfo1'=>self::FIELD_NOT_ASSIGNMENT,
                         'PackInfo3'=>self::FIELD_NOT_ASSIGNMENT,
