@@ -32,7 +32,8 @@ class Martin_Flytcloud_Model_Observer
             }
             $shipment->sendEmail(true, $comment);
         } catch (Exception $ex) {
-           var_dump($ex);exit;
+            Mage::log($ex,null,'flytcloud_upload.log');
+           //var_dump($ex);exit;
         }
 
     }
