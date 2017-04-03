@@ -30,9 +30,11 @@ class Martin_Flytcloud_Model_Observer
             {
                 $comment.=isset($track['number'])?$track['number']."\r\n":null;
             }
+            Mage::log($comment,null,'flytcloud_upload.log');
             $shipment->sendEmail(true, $comment);
         } catch (Exception $ex) {
-           var_dump($ex);exit;
+            Mage::log($ex,null,'flytcloud_upload.log');
+           //var_dump($ex);exit;
         }
 
     }
