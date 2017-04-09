@@ -10,10 +10,6 @@ $collection = Mage::getResourceModel('flytcloud/order_shipping_status_collection
     ->setPageSize(10)
     ->load();
 
-$order = Mage::getModel('sales/order')->load(18928);
-$submit = $helper->submitOrderToFlytcloud($order);
-
-/*
 try{
     foreach($collection as $_item){
         $fly_order_result = $adapter->query("select * from flytcloud_order_shipping_status where `order`=".$_item->getOrder());
@@ -40,4 +36,3 @@ try{
 }catch(Extractor $e){
 
 }
-*/
