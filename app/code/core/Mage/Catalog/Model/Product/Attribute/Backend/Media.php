@@ -216,9 +216,12 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Media extends Mage_Eav_Model_
             ->getAssignedImages($object, $storeIds);
 
         $picturesInOtherStores = array();
+        
+        //图片所有站点共享
+        /*
         foreach ($images as $image) {
             $picturesInOtherStores[$image['filepath']] = true;
-        }
+        }*/
 
         $toDelete = array();
         $filesToValueIds = array();

@@ -4,7 +4,9 @@ class Martin_Flytcloud_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getResourceModel($this->_getCollectionClass());
+        $collection = Mage::getResourceModel($this->_getCollectionClass())
+            ->join(array('order'=>'sales/order'),'order.entity_id=main_table.entity_id','customer_email');
+         
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -134,11 +136,19 @@ class Martin_Flytcloud_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widge
             'width' => '100px',
         ));
 
+        $this->addColumn('customer_email', array(
+            'header' => Mage::helper('sales')->__('Customer Email'),
+            'index' => 'customer_email',
+            'width' => '80px',            
+        ));
+        
+        /*        
         $this->addColumn('billing_name', array(
             'header' => Mage::helper('sales')->__('Bill to Name'),
             'index' => 'billing_name',
         ));
-
+        */
+                
         $this->addColumn('shipping_name', array(
             'header' => Mage::helper('sales')->__('Ship to Name'),
             'index' => 'shipping_name',
@@ -194,7 +204,39 @@ class Martin_Flytcloud_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widge
 
         return parent::_prepareColumns();
     }
-
+    
+    protected function _addColumnFilterToCollection($column)
+    {
+        if ($this->getCollection()) {
+            $field = ( $column->getFilterIndex() ) ? $column->getFilterIndex() : $column->getIndex();
+            if ($column->getFilterConditionCallback()) {
+                call_user_func($column->getFilterConditionCallback(), $this->getCollection(), $column);
+            } else {
+                if($column->getIndex()=='shipping_name'){
+                    $values = $column->getFilter()->getValue();
+                    $values = preg_replace("/[\s+]/",'|||',$values);
+                    $values = explode('|||',$values);
+                    foreach($values as $value){
+                        $cond = $this->getCondition($value);
+                        $this->getCollection()->addFieldToFilter($field , $cond);
+                    }
+                }else{
+                    $cond = $column->getFilter()->getCondition();
+                    if ($field && isset($cond)) {
+                        $this->getCollection()->addFieldToFilter($field , $cond);
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+    
+    public function getCondition($value)
+    {
+        $helper = Mage::getResourceHelper('core');
+        $likeExpression = $helper->addLikeEscape($value, array('position' => 'any'));
+        return array('like' => $likeExpression);
+    }
 
     public function getRowUrl($row)
     {
