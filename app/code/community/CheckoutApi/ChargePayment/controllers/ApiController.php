@@ -100,6 +100,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         $modelWebhook   = Mage::getModel('chargepayment/webhook');
         $helper         = Mage::helper('chargepayment');
 
+
+
         if ($responseToken) {
 
             if ($isLocalPayment) {
