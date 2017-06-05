@@ -44,12 +44,7 @@ class Facebook_AdsToolbox_Model_Observer {
   }
 
   public function estimateFeedGenerationTime() {
-    $supportzip = extension_loaded('zlib');
-    $format = Mage::getStoreConfig(
-      FacebookProductFeed::PATH_FACEBOOK_ADSTOOLBOX_FEED_GENERATION_FORMAT
-    ) ?: 'TSV';
-    $feed = ($format === 'TSV') ? new FacebookProductFeedTSV() :
-                                  new FacebookProductFeedXML();
+    $feed = self::getFeedObject();
 
     // Estimate = MAX (Appx Time to Gen 500 Products + 30 , Last Runtime + 20)
     $time_estimate = $feed->estimateGenerationTime();
@@ -82,6 +77,20 @@ class Facebook_AdsToolbox_Model_Observer {
     }
   }
 
+  private static function getFeedObject() {
+    $supportzip = extension_loaded('zlib');
+    $format = Mage::getStoreConfig(
+      FacebookProductFeed::PATH_FACEBOOK_ADSTOOLBOX_FEED_GENERATION_FORMAT
+    ) ?: 'TSV';
+    $feed = ($format === 'TSV') ? new FacebookProductFeedTSV() :
+                                  new FacebookProductFeedXML();
+    return $feed;
+  }
+
+  private static function checkFeedExists() {
+    return file_exists(self::getFeedObject()->getFullPath());
+  }
+
   public function internalGenerateFacebookProductFeed(
     $throwException = false,
     $checkCache = true
@@ -89,12 +98,9 @@ class Facebook_AdsToolbox_Model_Observer {
     FacebookProductFeed::log('feed generation start...');
     $time_start = time();
     $supportzip = extension_loaded('zlib');
-    $format = Mage::getStoreConfig(
-      FacebookProductFeed::PATH_FACEBOOK_ADSTOOLBOX_FEED_GENERATION_FORMAT
-    ) ?: 'TSV';
-    $feed = ($format === 'TSV') ? new FacebookProductFeedTSV() :
-                                  new FacebookProductFeedXML();
+    $feed = self::getFeedObject();
     $feed_target_file_path = $feed->getTargetFilePath($supportzip);
+    $format = ($feed instanceof FacebookProductFeedTSV) ? 'TSV' : 'XML';
 
     if ($checkCache) {
       $isstale = $feed->cacheIsStale($supportzip);
@@ -129,13 +135,10 @@ class Facebook_AdsToolbox_Model_Observer {
       if ($supportzip) {
         $feed->saveGZip();
       }
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       FacebookProductFeed::log(sprintf(
         'Caught exception: %s. %s', $e->getMessage(), $e->getTraceAsString()
       ));
-      if ($supportzip) {
-        $feed->saveGZip();
-      }
       if ($throwException) {
         throw $e;
       }
@@ -181,5 +184,18 @@ class Facebook_AdsToolbox_Model_Observer {
     if (strpos($controller_name, 'adminhtml_fb') !== false) {
       Mage::app()->getCacheInstance()->cleanType('config');
     }
+  }
+
+  public static function checkFeedWriteError() {
+    try {
+      if (self::checkFeedExists()) {
+        return '';
+      }
+      $dir = FacebookProductFeed::getFeedDirectory();
+      return is_writable($dir) ? '' : $dir;
+    } catch (Exception $e) {
+      return '/media/';
+    }
+    return '';
   }
 }

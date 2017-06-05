@@ -8,8 +8,8 @@ $helper=Mage::helper('flytcloud');
 $collection = Mage::getResourceModel('flytcloud/order_shipping_status_collection')
     ->addFieldToFilter('shipping_status',array('eq'=>'3'))
     ->setPageSize(30)
+    ->setOrder('`order`','desc')
     ->load();
-
 try{
     foreach($collection as $_item){
         $fly_order_result = $adapter->query("select * from flytcloud_order_shipping_status where `order`=".$_item->getOrder());

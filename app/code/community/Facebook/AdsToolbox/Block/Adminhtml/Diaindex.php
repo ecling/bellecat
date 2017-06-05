@@ -55,7 +55,7 @@ class Facebook_AdsToolbox_Block_Adminhtml_Diaindex
   }
 
   public function fetchStoreName() {
-    return FacebookAdsToolbox::getStoreName();
+    return htmlspecialchars(FacebookAdsToolbox::getStoreName(), ENT_QUOTES, 'UTF-8');
   }
 
   public function fetchStoreTimezone() {
@@ -64,6 +64,11 @@ class Facebook_AdsToolbox_Block_Adminhtml_Diaindex
 
   public function getPixelAjaxRoute() {
     return $this->getPixelindex()->getAjaxRoute();
+  }
+
+  public function getStoreAjaxRoute() {
+    return Mage::helper('adminhtml')->getUrl(
+      'adminhtml/fbstore/ajax');
   }
 
   public function determineFbTimeZone($magentoTimezone) {
@@ -82,27 +87,11 @@ class Facebook_AdsToolbox_Block_Adminhtml_Diaindex
     return $this->getFeedindex()->fetchFeedSetupFormat();
   }
 
-  public function getTotalVisibleProducts() {
-    return Mage::getModel('catalog/product')->getCollection()
-      ->addAttributeToFilter('visibility',
-          array(
-            'neq' =>
-              Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE
-          )
-      )
-      ->getSize();
-  }
-
   public function getFeedUrl() {
-    $feed_url = sprintf('%sfacebook_adstoolbox_product_feed.%s',
+    return sprintf('%sfacebook_adstoolbox_product_feed.%s',
       $this->getFeedIndex()->getBaseUrl(),
       strtolower($this->fetchFeedSetupFormat())
     );
-    if (extension_loaded('zlib')) {
-      return $feed_url.'.gz';
-    } else {
-      return $feed_url;
-    }
   }
 
   public function fetchFeedSamples() {
@@ -146,5 +135,26 @@ class Facebook_AdsToolbox_Block_Adminhtml_Diaindex
       array_push($simple_module_list, $module);
     }
     return implode('; ', $simple_module_list);
+  }
+
+  public function getStores() {
+    $stores = Mage::app()->getStores(true);
+
+    $store_map = array();
+    foreach ($stores as $store) {
+      $val = $store->getWebsite()->getName() . ' > ' .
+        $store->getGroup()->getName()  . ' > ' .
+        $store->getName();
+      $store_map[$val] = $store->getId();
+    }
+    return $store_map;
+  }
+
+  public function getSelectedStore() {
+      return FacebookAdsToolbox::getDefaultStoreId();
+  }
+
+  public function checkFeedWriteError() {
+    return Mage::getModel('Facebook_AdsToolbox/observer')->checkFeedWriteError();
   }
 }

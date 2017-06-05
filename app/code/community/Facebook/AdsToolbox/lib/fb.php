@@ -8,7 +8,7 @@
  * of patent rights can be found in the PATENTS file in the code directory.
  */
 
-//if (!class_exists('FacebookAdsToolbox')) {
+if (!class_exists('FacebookAdsToolbox', false)) {
   class FacebookAdsToolbox {
 
     const LOGFILE = 'facebook_ads_extension.log';
@@ -87,15 +87,82 @@
         return $frontendName;
       }
       $defaultStoreId = self::getDefaultStoreID();
-      $defaultStoreName = Mage::getModel('core/store')->load($defaultStoreId)->getGroup()->getName();
-      if ($defaultStoreName !== 'Main Website Store' && $defaultStoreName !== 'Main Store') {
+      $defaultStoreName = Mage::getModel('core/store')
+        ->load($defaultStoreId)->getGroup()->getName();
+      $escapeStrings = array("\r", "\n", "&nbsp;", "\t");
+      $defaultStoreName =
+        trim(str_replace($escapeStrings, ' ', $defaultStoreName));
+      if (!$defaultStoreName) {
+        $defaultStoreName = Mage::app()->getWebsite(true)->getName();
+        $defaultStoreName =
+          trim(str_replace($escapeStrings, ' ', $defaultStoreName));
+      }
+      if ($defaultStoreName && $defaultStoreName !== 'Main Website Store'
+        && $defaultStoreName !== 'Main Store'
+        && $defaultStoreName !== 'Main Website') {
         return $defaultStoreName;
       }
-      return 'Original';
+      return parse_url(self::getBaseUrl(), PHP_URL_HOST);
     }
 
     public static function getDefaultStoreID() {
-      return Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStoreId();
+      try {
+        $store_id = Mage::getStoreConfig('facebook_ads_toolbox/fbstore/id');
+
+        $valid_store_id = false;
+        // Check that store_id is valid, if a store gets deleted, we should_log
+        // change the store back to the default store
+        if ($store_id) {
+          $stores = Mage::app()->getStores(true);
+
+          foreach ($stores as $store) {
+            if ($store_id === $store->getId()) {
+              $valid_store_id = true;
+              break;
+            }
+          }
+
+          // If the store id is invalid, save the default id
+          if (!$valid_store_id) {
+            $store_id =
+              Mage::app()
+                ->getWebsite(true)
+                ->getDefaultGroup()
+                ->getDefaultStoreId();
+            Mage::getModel('core/config')->saveConfig(
+              'facebook_ads_toolbox/fbstore/id',
+              $store_id);
+          }
+        }
+
+        return is_numeric($store_id)
+          ? $store_id
+          : Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStoreId();
+      } catch (Exception $e) {
+        FacebookAdsToolbox::log('Failed getting store ID, returning default');
+        return Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStoreId();
+      }
+    }
+
+    public static function getTotalVisibleProducts($store_id) {
+      if ($store_id === null || !is_numeric($store_id)) {
+        $store_id = self::getDefaultStoreId();
+      }
+
+      return Mage::getModel('catalog/product')->getCollection()
+        ->addStoreFilter($store_id)
+        ->addAttributeToFilter('visibility',
+            array(
+              'neq' =>
+                Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE
+            )
+        )
+        ->addAttributeToFilter('status',
+            array(
+              'eq' =>
+                Mage_Catalog_Model_Product_Status::STATUS_ENABLED
+            ))
+        ->getSize();
     }
 
     public static $fbTimezones =  array(
@@ -251,4 +318,4 @@
         self::$fbTimezones['unknown'];
     }
   }
-//}
+}
