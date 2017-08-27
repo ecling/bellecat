@@ -1,5 +1,7 @@
 <?php
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Controller for Checkout.com Webhooks
  *
@@ -118,6 +120,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                     Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
 
                     if(!is_null($result['order_increment_id'])){
+
+                        Mage::log('callbackAction', null, 'ckonew.log', true);
                         $order->cancel();
                         $order->addStatusHistoryComment('Order has been cancelled.');
                         $order->save();
@@ -167,6 +171,7 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
             $helper             = Mage::helper('chargepayment');
             $helper->restoreQuoteSession($order);
+            Mage::log('failAction', null, 'ckonew.log', true);
         }
 
         return $this->_redirectUrl($redirectUrl);
@@ -246,6 +251,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
             $order->cancel();
             $order->addStatusHistoryComment('Order has been cancelled.');
             $order->save();
+
+            Mage::log('No card token', null, 'ckonew.log', true);
 
             /* Restore quote session */
             $helper->restoreQuoteSession($order);

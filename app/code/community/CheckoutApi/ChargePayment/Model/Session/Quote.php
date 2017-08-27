@@ -116,15 +116,17 @@ class CheckoutApi_ChargePayment_Model_Session_Quote extends Mage_Core_Model_Sess
     public function isCheckoutLocalPaymentTokenExist($paymentToken) {
         $result = false;
 
-        $modeCreditCardJs =  Mage::getModel('chargepayment/creditCardJs')->getMode();
-        $secretKeyCreditCardJs = Mage::getModel('chargepayment/creditCardJs')->getSecretKey();
-        $secretKeyHosted = Mage::getModel('chargepayment/hosted')->getSecretKey();
-        $modeHosted = Mage::getModel('chargepayment/hosted')->getMode();
+        //$modeCreditCardJs =  Mage::getModel('chargepayment/creditCardJs')->getMode();
+        //$secretKeyCreditCardJs = Mage::getModel('chargepayment/creditCardJs')->getSecretKey();
+        $secretKey = Mage::getModel('chargepayment/hosted')->getSecretKey();
+        $mode = Mage::getModel('chargepayment/hosted')->getMode();
 
-        $secretKey = $secretKeyCreditCardJs ?: $secretKeyHosted;
-        $mode = $modeCreditCardJs ?: $modeHosted;
+        //$secretKey = $secretKeyCreditCardJs ?: $secretKeyHosted;
+        //$mode = $modeCreditCardJs ?: $modeHosted;
+        
 
-        if(empty($secretKey) || empty($mode)){ 
+        if(empty($secretKey) || empty($mode)){
+            Mage::log('isCheckoutLocalPaymentTokenExist - empty sk or mode', null, 'ckonew.log', true);
             return $result;
         }
            
@@ -137,7 +139,10 @@ class CheckoutApi_ChargePayment_Model_Session_Quote extends Mage_Core_Model_Sess
 
             $data = $Api->verifyChargePaymentToken($verifyParams);
 
-            if($data->getResponseCode() == 10000 && $data->getChargeMode() === 3){
+
+            //if($data->getResponseCode() == 10000 && $data->getChargeMode() === 3){
+
+            if($data->getChargeMode() === 3){
                 $session        = Mage::getSingleton('chargepayment/session_quote');
                 $order = Mage::getModel('sales/order')->loadByIncrementId($session->last_order_increment_id);
 
