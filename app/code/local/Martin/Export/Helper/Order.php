@@ -331,7 +331,7 @@ class Martin_Export_Helper_Order extends Mage_Core_Helper_Abstract
                               {
                                   $col=$this->_getColByTitle($label,$formatHelper->getCurrentZone());
                                   $formatHelper->setValue($col.$row,$val);
-                                 // var_dump($titles,$col.$row,$val);
+                                  //var_dump($productId.'---'.$col.'-----'.$row.'-----'.$val);
                                   if(is_null($simpleItemStartCol)){
                                       $simpleItemStartCol=$col;
                                   }
