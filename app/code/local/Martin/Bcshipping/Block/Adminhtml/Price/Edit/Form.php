@@ -40,8 +40,8 @@ Class Martin_Bcshipping_Block_Adminhtml_Price_Edit_Form extends Mage_Adminhtml_B
             'options'    => Mage::helper('flytcloud')->getCountryOptions(),
         ));
 
-        $fieldset->addField('condition', 'text', array(
-            'name' => 'condition',
+        $fieldset->addField('condition_num', 'text', array(
+            'name' => 'condition_num',
             'label' => Mage::helper('tag')->__('Condition'),
             'title' => Mage::helper('tag')->__('Condition'),
             'required' => true

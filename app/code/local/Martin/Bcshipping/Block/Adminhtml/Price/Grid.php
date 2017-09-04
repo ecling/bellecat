@@ -50,11 +50,6 @@ class Martin_Bcshipping_Block_Adminhtml_Price_Grid extends Mage_Adminhtml_Block_
             'index'     => 'condition_num'
         ));
 
-        $this->addColumn('billing_postcode', array(
-            'header'    => Mage::helper('customer')->__('ZIP'),
-            'width'     => '90',
-            'index'     => 'billing_postcode',
-        ));
 
         $this->addColumn('price', array(
             'header'    => Mage::helper('adminhtml')->__('Price'),

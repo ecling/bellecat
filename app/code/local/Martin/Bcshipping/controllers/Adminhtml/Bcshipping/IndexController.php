@@ -80,7 +80,7 @@ class Martin_Bcshipping_Adminhtml_Bcshipping_IndexController extends
     public function saveAction(){
         if ($postData = $this->getRequest()->getPost()) {
             $data['country'] = $postData['country'];
-            $data['condition'] = $postData['condition'];
+            $data['condition_num'] = $postData['condition_num'];
             $data['shipping_name'] = $postData['shipping_name'];
             $data['price'] = $postData['price'];
             $data['additional_price'] = $postData['additional_price'];
