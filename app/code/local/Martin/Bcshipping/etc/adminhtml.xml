@@ -49,9 +49,19 @@
                             </bcshipping>
                         </children>
                     </sales>
+                    <system translate="title">
+                        <children>
+                            <config>
+                                <children>
+                                    <bcshipping>
+                                        <title>Shipping configuration</title>
+                                    </bcshipping>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
                 </children>
             </admin>
         </resources>
     </acl>
-
 </config>

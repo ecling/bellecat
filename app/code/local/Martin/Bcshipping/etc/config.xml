@@ -57,6 +57,15 @@
                 <class>Martin_Bcshipping_Block</class>
             </bcshipping>
         </blocks>
+        <sales>
+            <shipping>
+                <carriers>
+                    <bcshipping>
+                        <class>Martin_Bcshipping_Model_Carrier_Bcshipping</class>
+                    </bcshipping>
+                </carriers>
+            </shipping>
+        </sales>
     </global>
     <frontend>
         <layout>
@@ -78,15 +87,15 @@
     </frontend>
     <default>
         <carriers>
-            <bchipping>
-                <active>0</active>
+            <bcshipping>
+                <active>1</active>
                 <sallowspecific>0</sallowspecific>
                 <cutoff_cost>50</cutoff_cost>
                 <model>bcshipping/carrier_bcshipping</model>
                 <name>bcshipping</name>
                 <title>Bellecat Shipping</title>
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
-            </bchipping>
+            </bcshipping>
         </carriers>
     </default>
     <adminhtml>

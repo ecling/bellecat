@@ -42,7 +42,7 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
      *
      * @var string
      */
-    protected $_code = 'bshipping';
+    protected $_code = 'bcshipping';
 
     /**
      * Whether this carrier has fixed rates calculation
@@ -59,31 +59,46 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
+
         if (!$this->getConfigFlag('active')) {
             return false;
         }
 
         $result = Mage::getModel('shipping/rate_result');
 
-        $this->_updateFreeMethodQuote($request);
+        $method = Mage::getModel('shipping/rate_result_method');
 
-        if (($request->getFreeShipping())
-            || ($request->getBaseSubtotalInclTax() >=
-                $this->getConfigData('free_shipping_subtotal'))
-        ) {
-            $method = Mage::getModel('shipping/rate_result_method');
+        $method->setCarrier('bcshipping');
+        $method->setCarrierTitle($this->getConfigData('title'));
 
-            $method->setCarrier('freeshipping');
-            $method->setCarrierTitle($this->getConfigData('title'));
+        $method->setMethod('bcshipping');
+        $method->setMethodTitle($this->getConfigData('name'));
 
-            $method->setMethod('freeshipping');
-            $method->setMethodTitle($this->getConfigData('name'));
+        $dest_country_id = $request->getDestCountryId();
+        $items = $request->getAllItems();
 
-            $method->setPrice('0.00');
-            $method->setCost('0.00');
+        $shipping_cost  = 0;
 
-            $result->append($method);
+        if ($request->getAllItems()) {
+            foreach ($request->getAllItems() as $item) {
+                if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                    continue;
+                }
+                $product_id = $item->getProductId();
+                $product = Mage::getModel('catalog/product')->load($product_id);
+                $product_price = $product->getPrice();
+                $product_cost = Mage::helper('bcshipping')->calculate($product,$dest_country_id);
+                if($product_cost-$product_price>0){
+                    $shipping_cost += $product_cost-$product_price;
+                }
+            }
         }
+
+        $method->setPrice($shipping_cost);
+        $method->setCost($shipping_cost);
+
+        $result->append($method);
+
 
         return $result;
     }
