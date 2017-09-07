@@ -76,7 +76,7 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
 
         $dest_country_id = $request->getDestCountryId();
         $items = $request->getAllItems();
-
+		
         $shipping_cost  = 0;
 
         if ($request->getAllItems()) {
