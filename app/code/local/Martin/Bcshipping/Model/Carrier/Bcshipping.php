@@ -89,7 +89,7 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
                 $product_price = $product->getPrice();
                 $product_cost = Mage::helper('bcshipping')->calculate($product,$dest_country_id);
                 if($product_cost-$product_price>0){
-                    $shipping_cost += $product_cost-$product_price;
+                    $shipping_cost = $shipping_cost+($product_cost-$product_price)*$item->getQty();
                 }
             }
         }
