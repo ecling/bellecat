@@ -19,7 +19,7 @@ class Martin_Bcshipping_Block_Adminhtml_Price_Grid extends Mage_Adminhtml_Block_
 
         $this->getMassactionBlock()->addItem('delete', array(
             'label'=> Mage::helper('sales')->__('delete'),
-            'url'  => $this->getUrl('*/shipping_type_country/delete'),
+            'url'  => $this->getUrl('*/*/delete'),
         ));
 
         return $this;

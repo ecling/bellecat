@@ -104,4 +104,16 @@ class Martin_Bcshipping_Adminhtml_Bcshipping_IndexController extends
         }
         return $this->_redirect('*/*/index', array('_current' => true));
     }
+
+    public function deleteAction(){
+        if ($postData = $this->getRequest()->getPost()) {
+            foreach($postData['id'] as $id){
+                $model  = Mage::getModel('bcshipping/price')->load($id);
+                if($model){
+                    $model->delete();
+                }
+            }
+        }
+        return $this->_redirect('*/*/index', array('_current' => true));
+    }
 }
