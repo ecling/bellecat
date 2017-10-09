@@ -181,8 +181,9 @@ class FacebookProductFeed {
     $items = array();
     $stock = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product);
     $title = $product_name ? $product_name : $product->getName();
-
-    $items[self::ATTR_ID] = $this->buildProductAttr(self::ATTR_ID, $product->getId());
+    
+    $code = Mage::app()->getStore($this->store_id)->getCode();
+    $items[self::ATTR_ID] = $code.'_'.$this->buildProductAttr(self::ATTR_ID, $product->getId());
     $items[self::ATTR_TITLE] = $this->buildProductAttr(self::ATTR_TITLE, $title);
 
     // 'Description' is required by default but can be made
@@ -207,6 +208,7 @@ class FacebookProductFeed {
     if (!filter_var($product_link, FILTER_VALIDATE_URL)) {
       $product_link = $this->store_url . $product_link;
     }
+    $product_link .= '?utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content=Dynamicads';
     $items[self::ATTR_LINK] = $this->buildProductAttr(
       self::ATTR_LINK,
       $product_link);
@@ -240,10 +242,16 @@ class FacebookProductFeed {
       $price = $this->convertCurrency($price);
     }
 
+    /*
     $items[self::ATTR_PRICE] = $this->buildProductAttr('price',
       sprintf('%s %s',
         $this->stripCurrencySymbol($price),
         Mage::app()->getStore($this->store_id)->getCurrentCurrencyCode()));
+    */
+    $items[self::ATTR_PRICE] = $this->buildProductAttr('price',
+      sprintf('%s %s',
+        $this->stripCurrencySymbol($price),
+        'EUR'));
 
     $items[self::ATTR_SHORT_DESCRIPTION] = $this->buildProductAttr(self::ATTR_SHORT_DESCRIPTION,
       $product->getShortDescription());
@@ -252,10 +260,27 @@ class FacebookProductFeed {
       $this->buildProductAttr(self::ATTR_PRODUCT_TYPE,
         $this->getCategoryPath($product));
 
+    $category_ids = $product->getCategoryIds();
+    foreach($category_ids as $category_id){
+        if(isset($this->google_category[$category_id])){
+            if(strlen($this->google_category[$category_id])>2){
+                $google_cate = $this->google_category[$category_id];
+                break;
+            }
+        }
+    }
     $items[self::ATTR_GOOGLE_PRODUCT_CATEGORY] =
       $this->buildProductAttr(self::ATTR_GOOGLE_PRODUCT_CATEGORY,
-        $product->getData('google_product_category'));
-
+        $google_cate);
+    
+    $items['custom_label_0'] = $code;
+    if(in_array($product->getId(),$this->hot_products)){
+        $items['custom_label_1'] = 'Hot';
+    }elseif(in_array($product->getId(),$this->new_products)){
+        $items['custom_label_1'] = 'New';
+    }else{
+        $items['custom_label_1'] = 'Not';
+    }
     return $items;
   }
 
@@ -316,13 +341,68 @@ class FacebookProductFeed {
     $io->streamWrite($this->buildHeader()."\n");
 
     $this->store_id = FacebookAdsToolbox::getDefaultStoreId();
-
-    $collection = Mage::getModel('catalog/product')->getCollection()
-      ->addStoreFilter($this->store_id);
-    $total_number_of_products = $collection->getSize();
-    unset($collection);
-
-    $this->writeProducts($io, $total_number_of_products, true);
+    
+    $dir = getcwd();
+    $google_categroy_file = $dir.'/var/import/category.csv';
+    $handle = fopen($google_categroy_file,'r');
+    $google_row = fgetcsv($handle);
+    while($google_row = fgetcsv($handle)){
+        $this->google_category[$google_row['0']] = $google_row['2'];
+    }
+    fclose($handle);
+    
+    $adapter = Mage::getModel('core/resource')->getConnection('core_read');
+    
+    $new_date = time()-10*24*3600;
+    $new_date = date('Y-m-d H:i:s',$new_date);
+    $new_result = $adapter->query("select entity_id from catalog_product_entity where created_at>='".$new_date."'");
+    $new_rows = $new_result->fetchAll();
+    
+    $this->new_products = array();
+    foreach($new_rows as $key=>$value){
+        $this->new_products[] = $value['entity_id'];
+    }
+    
+    $hot_date = time()-30*24*3600;
+    $hot_date = date('Y-m-d H:i:s',$hot_date);
+        
+    $stores  = Mage::app()->getStores();
+    foreach($stores as $store){
+        $this->store_id = $store->getStoreId();
+        
+        $sql = "select product_id from sales_flat_order_item where store_id=".$this->store_id." and created_at>'".$hot_date."' group by product_id order by count(product_id) desc limit 35";
+        $hot_result = $adapter->query($sql);
+        $rows = $hot_result->fetchAll();
+        
+        $this->in_str = '';
+        $this->hot_products = array();
+        foreach($rows as $key=>$row){
+            /*
+            if($key==0){
+                $this->in_str = $row['product_id'];
+            }else{
+                $this->in_str = $this->in_str.','.$row['product_id'];
+            }
+            */
+            $this->hot_products[] = $row['product_id'];
+        }
+        
+        $collection = Mage::getResourceModel('catalog/product_collection')
+          ->setStore($this->store_id); 
+        
+        /*
+        $date = time()-10*24*3600;
+        $date = date('Y-m-d H:i:s',$date);
+          
+        $select = $collection->getSelect()
+                ->where("e.created_at>'".$date."' or e.entity_id in (".$this->in_str.")");
+        */  
+                 
+        $total_number_of_products = $collection->getSize();
+        unset($collection);
+    
+        $this->writeProducts($io, $total_number_of_products, true);
+    }
 
     $footer = $this->buildFooter();
     if ($footer) {
@@ -372,13 +452,27 @@ class FacebookProductFeed {
             ($count + $batch_max)));
       }
 
-      $products = Mage::getModel('catalog/product')->getCollection()
+      $products = Mage::getResourceModel('catalog/product_collection')
+        ->setStore($this->store_id)
         ->addAttributeToSelect('*')
         ->addStoreFilter($this->store_id)
         ->setPageSize($batch_max)
         ->setCurPage($count / $batch_max + 1)
         ->addUrlRewrite();
-
+      
+      Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($products);
+      Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($products);
+      
+      /*  
+      $date = time()-10*24*3600;
+      $date = date('Y-m-d H:i:s',$date);
+      
+      $select = $products->getSelect()
+            ->where("e.created_at>'".$date."' or e.entity_id in (".$this->in_str.")");
+            
+      $products->load(); 
+      */
+        
       foreach ($products as $product) {
         try {
           $product_name = $product->getName();
@@ -616,7 +710,8 @@ class FacebookProductFeed {
       $this->base_currency = Mage::app()->getStore($this->store_id)->getBaseCurrencyCode();
     }
     if (!isset($this->current_currency)) {
-      $this->current_currency = Mage::app()->getStore($this->store_id)->getCurrentCurrencyCode();
+      //$this->current_currency = Mage::app()->getStore($this->store_id)->getCurrentCurrencyCode();
+      $this->current_currency = 'EUR';
     }
 
     if ($this->base_currency === $this->current_currency) {

@@ -19,7 +19,9 @@ class Facebook_AdsToolbox_Block_ViewContent
 
   public function getContentIDs() {
     $products = array();
-    $products[] = Mage::registry('current_product')->getId();
+    //$products[] = Mage::registry('current_product')->getId();
+	$code = Mage::app()->getStore()->getCode();
+    $products[] = $code.'_'.Mage::registry('current_product')->getId();
     return $this->arryToContentIdString($products);
   }
 

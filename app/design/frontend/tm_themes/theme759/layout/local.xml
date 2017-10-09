@@ -128,7 +128,6 @@
 
 			<block type="wishlist/customer_sidebar" name="wishlist_sidebar" as="wishlist" after="cart_sidebar" template="wishlist/sidebar.phtml" />
 
-			<block type="catalog/product_compare_sidebar" after="wishlist_sidebar" name="catalog.compare.sidebar" template="catalog/product/compare/sidebar.phtml"/>
 			<block type="reports/product_viewed" after="catalog.compare.sidebar" name="left.reports.product.viewed" template="reports/product_viewed.phtml" />
 			<block type="reports/product_compared" after="left.reports.product.viewed" name="left.reports.product.compared" template="reports/product_compared.phtml" />
 			<block type="poll/activePoll" name="left.poll">
