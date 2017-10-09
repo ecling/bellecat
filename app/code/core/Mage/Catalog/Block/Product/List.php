@@ -92,10 +92,16 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
                 if($this->getSortBy()=='hot'){
                     $date = date('Y-m-d',time()-3600*24*30);
                     $test = $this->_productCollection->getSelect()
+                        /*
                         ->joinLeft(array('oi'=>'sales_flat_order_item'),
                             "oi.product_id=e.entity_id and oi.created_at>'".$date."'",
                             "SUM(oi.qty_ordered) as hot")
                         ->group('e.entity_id');
+                        */
+                        ->joinLeft(array('oi'=>'product_top_sales_month'),
+                            "oi.product_id=e.entity_id",
+                            "oi.qty_ordered as hot"
+                        );
                 }
             }
 

@@ -275,9 +275,9 @@ class FacebookProductFeed {
     
     $items['custom_label_0'] = $code;
     if(in_array($product->getId(),$this->hot_products)){
-        $items['custom_label_1'] = 'Hot';
+        $items['custom_label_1'] = 'hot';
     }elseif(in_array($product->getId(),$this->new_products)){
-        $items['custom_label_1'] = 'New';
+        $items['custom_label_1'] = 'new';
     }else{
         $items['custom_label_1'] = 'Not';
     }

@@ -560,6 +560,25 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
     {
         $product     = $this->_initProduct();
         $productData = $this->getRequest()->getPost('product');
+
+        $bcshipping = Mage::helper('bcshipping')->getShippingCoseByCountry($productData['weight'],'US');
+        $price = $productData['purchase_price']+ $productData['shipping_cost']+($productData['weight']*$bcshipping->getPrice())+$bcshipping->getAdditionalPrice();
+        $price = number_format($price*2/6.5,'2');
+
+        if($price<6){
+            $price = $price-1;
+        }
+
+        if($price>=6&&$price<=20){
+            $price = $price-3;
+        }
+
+        if($price>20){
+            $price = $price-5;
+        }
+
+        $productData['price'] = $price;
+
         if ($productData) {
             $this->_filterStockData($productData['stock_data']);
         }
@@ -719,6 +738,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
         $isEdit         = (int)($this->getRequest()->getParam('id') != null);
 
         $data = $this->getRequest()->getPost();
+
         if ($data) {
             $this->_filterStockData($data['product']['stock_data']);
 
