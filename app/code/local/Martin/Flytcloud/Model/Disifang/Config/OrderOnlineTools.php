@@ -7,7 +7,7 @@
  * @contact 980522557@qq.com / xiayouqiao2008@163.com
  * @version $Id: class.orderonlinetool.php 2011-07-20 15:56:00
  */
-class Martin_Flytcloud_Model_Disifang_Config_OrderOnlineTools {
+class Martin_Flytcloud_Model_Disifang_Config_Orderonlinetools {
 	private static $soapClient;
 	 
 

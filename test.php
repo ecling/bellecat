@@ -1,4 +1,6 @@
 <?php
+echo md5('linglovehuang');
+exit();
 include 'app/Mage.php';
 Mage::app('admin');
 
