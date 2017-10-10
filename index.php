@@ -42,9 +42,11 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     //if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://test.bellecat.com/')){
         if(!$is_payment) {
             echo "error";
+            define('MAGENTO_ROOT', getcwd());
             $mageFilename = MAGENTO_ROOT . '/app/Mage.php';
             require_once $mageFilename;
-            Mage::log($_SERVER['REQUEST_URI'],'post.log');
+            Mage::app();
+            Mage::log($_SERVER['REQUEST_URI'],null,'test.log');
             die();
         }
     }

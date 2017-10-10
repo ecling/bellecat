@@ -2,7 +2,9 @@
 echo md5('linglovehuang');
 exit();
 include 'app/Mage.php';
-Mage::app('admin');
+Mage::app();
+Mage::log('test',null,'test.log');
+exit();
 
 $test =  Mage::getModel('directory/currency')->getCurrencyRates('EUR','USD');
 Mage::app()->getStore()->getBaseCurrency();
