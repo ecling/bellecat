@@ -76,10 +76,13 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
 
         $dest_country_id = $request->getDestCountryId();
         $items = $request->getAllItems();
-		
+
         $shipping_cost  = 0;
 
+        $qty = 0;
+
         if ($request->getAllItems()) {
+
             foreach ($request->getAllItems() as $item) {
                 if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
                     continue;
@@ -89,9 +92,21 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
                 $product_price = $product->getPrice();
                 $product_cost = Mage::helper('bcshipping')->calculate($product,$dest_country_id);
                 if($product_cost-$product_price>0){
-                    $shipping_cost = $shipping_cost+($product_cost-$product_price)*$item->getQty();
+                    $shipping_cost = $shipping_cost+($product_cost-$product_price-0.01)*$item->getQty();
                 }
+                $qty = $qty+$item->getQty();
             }
+        }
+
+        $discount = Mage::getStoreConfig('bcshipping/general/discount');
+        if($qty>=2 && $discount>0){
+            $shipping_cost = $shipping_cost*$discount;
+        }
+
+        $free_shipping = Mage::getStoreConfig('bcshipping/general/freeshipping');
+
+        if($free_shipping>0 && ($free_shipping<$request->getPackageValue())){
+            $shipping_cost = 0;
         }
 
         $method->setPrice($shipping_cost);
