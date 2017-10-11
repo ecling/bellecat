@@ -36,6 +36,22 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </country>
+                        <discount>
+                            <label>2 piece(s) Discount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </discount>
+                        <freeshipping>
+                            <label>Free Shipping Amount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </freeshipping>
                     </fields>
                 </general>
             </groups>
