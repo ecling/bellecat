@@ -24,6 +24,7 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
+/*
 $is_payment = false;
 
 if(isset($_SERVER['REQUEST_URI'])){
@@ -36,6 +37,7 @@ if(!$is_payment) {
 if(!$is_payment){
     $is_payment = strstr($_SERVER['REQUEST_URI'],'/index.php/api/');
 }
+
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
     if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://www.bellecat.com/')){
@@ -51,6 +53,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         }
     }
 }
+*/
 
 //echo 'testing....coming soon!';exit;
 if (version_compare(phpversion(), '5.3.0', '<')===true) {
