@@ -57,12 +57,14 @@ class Mage_Checkout_Block_Onepage_Payment_Methods extends Mage_Payment_Block_For
      */
     public function getSelectedMethodCode()
     {
+        /*
         $locale = Mage::app()->getLocale()->getLocaleCode();
         if($locale == 'nl_NL') {
             return 'checkoutapijs';
         } else {
             return 'paypal_express';
         }
+        */
         if ($method = $this->getQuote()->getPayment()->getMethod()) {
             return $method;
         }

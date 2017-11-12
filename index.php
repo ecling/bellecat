@@ -24,6 +24,7 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
+/*
 $is_payment = false;
 
 if(isset($_SERVER['REQUEST_URI'])){
@@ -51,6 +52,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         }
     }
 }
+*/
 
 //echo 'testing....coming soon!';exit;
 if (version_compare(phpversion(), '5.3.0', '<')===true) {
