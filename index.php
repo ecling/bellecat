@@ -38,6 +38,7 @@ if(!$is_payment){
     $is_payment = strstr($_SERVER['REQUEST_URI'],'/index.php/api/');
 }
 
+
 if($_SERVER['REQUEST_METHOD']=='POST'){
     if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://www.bellecat.com/')){
     //if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://test.bellecat.com/')){
