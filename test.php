@@ -1,9 +1,12 @@
 <?php
+/*
 echo md5('linglovehuang');
 exit();
+*/
 include 'app/Mage.php';
 Mage::app();
-Mage::log('test',null,'test.log');
+//Mage::log('test',null,'test.log');
+echo date('Y-m-d H:i:s',time());
 exit();
 
 $test =  Mage::getModel('directory/currency')->getCurrencyRates('EUR','USD');

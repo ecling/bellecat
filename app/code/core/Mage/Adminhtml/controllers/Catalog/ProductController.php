@@ -561,9 +561,11 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
         $product     = $this->_initProduct();
         $productData = $this->getRequest()->getPost('product');
 
+        $rate = Mage::getStoreConfig('bcshipping/general/rate');
+
         $bcshipping = Mage::helper('bcshipping')->getShippingCoseByCountry($productData['weight'],'NL');
         $price = $productData['purchase_price']+ $productData['shipping_cost']+($productData['weight']*$bcshipping->getPrice())+$bcshipping->getAdditionalPrice();
-        $price = number_format($price*2/6.5,'2');
+        $price = number_format($price*2/$rate,'2');
 
         if($price<6){
             $price = $price-1;
