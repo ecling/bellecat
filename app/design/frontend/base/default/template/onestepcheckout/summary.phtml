@@ -1,9 +1,17 @@
+<?php
+$checkoutHelper = Mage::helper('onestepcheckout/checkout');
+$current_code = Mage::app()->getStore()->getCurrentCurrency()->getCode();
+$payment = $this->getQuote()->getPayment()->getMethod();
+?>
 <table class="onestepcheckout-summary">
     <thead>
         <tr>
             <th class="name"><?php echo $this->__('Product'); ?></th>
             <th class="qty"><?php echo $this->__('Qty'); ?></th>
             <th class="total"><?php echo $this->__('Subtotal'); ?></th>
+            <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
+            <th class="total"><?php echo $this->__('Subtotal').'(USD)'; ?></th>
+            <?php endif; ?>
         </tr>
     </thead>
     <?php foreach($this->getItems() as $item): ?>
@@ -46,6 +54,9 @@
             <?php echo $this->helper('checkout')->formatPrice($item->getRowTotal()); ?>
             <?php endif; ?>
         </td>
+        <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
+        <td class="total"><?php echo '($'.$item->getRowTotal().')'; ?></td>
+        <?php endif; ?>
     </tr>
     <?php endforeach; ?>
 </table>
@@ -83,6 +94,11 @@
         <td class="value">
             <?php echo $this->helper('checkout')->formatPrice($value); ?>
         </td>
+        <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
+        <td class="value">
+            <?php echo '($'.$value.')'; ?>
+        </td>
+        <?php endif; ?>
     </tr>
     <?php endforeach; ?>
 </table>

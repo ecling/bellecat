@@ -20,6 +20,8 @@ $baseCode       = Mage::app()->getStore()->getBaseCurrencyCode();
             null
         );
 
+        console.log(window.jsCheckoutApi);
+
         <?php if ($currentCode !== $baseCode):?>
         $$('#checkout-review-table tfoot tr').last().hide();
         <?php endif ?>

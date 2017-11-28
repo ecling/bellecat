@@ -2,11 +2,25 @@
 /*
 echo md5('linglovehuang');
 exit();
-*/
+
 include 'app/Mage.php';
 Mage::app();
 //Mage::log('test',null,'test.log');
+
 echo date('Y-m-d H:i:s',time());
+
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+	$ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+	$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+	$ip = $_SERVER['REMOTE_ADDR'];
+}
+var_dump($ip);
+
+//echo Mage::getSingleton('core/date')->gmtTimestamp('2017-11-08 02:06:42');
+echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
+>>>>>>> origin/master
 exit();
 
 $test =  Mage::getModel('directory/currency')->getCurrencyRates('EUR','USD');
@@ -56,5 +70,5 @@ $products = Mage::getResourceModel('catalog/product_collection')
 Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($products);
 Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($products);
 
-print_r((string)$products->getSelect());
+print_r((string)$products->getSelect());s
 
