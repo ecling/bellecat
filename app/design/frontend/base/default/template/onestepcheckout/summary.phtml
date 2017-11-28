@@ -10,7 +10,7 @@ $payment = $this->getQuote()->getPayment()->getMethod();
             <th class="qty"><?php echo $this->__('Qty'); ?></th>
             <th class="total"><?php echo $this->__('Subtotal'); ?></th>
             <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
-            <th class="total"><?php echo $this->__('Subtotal (USD)'); ?></th>
+            <th class="total"><?php echo $this->__('Subtotal').'(USD)'; ?></th>
             <?php endif; ?>
         </tr>
     </thead>
