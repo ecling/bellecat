@@ -15,14 +15,19 @@ checkoutApi.prototype = {
             case 'onepage':
                 this.prepareSubmit();
                 break;
+             // case 'index':
+             //    this.prepareSubmit();
+             //    break;
             case 'sales_order_create':
             case 'sales_order_edit':
                 this.prepareAdminSubmit();
                 break;
         }
     },
-    prepareSubmit: function() {
+    prepareSubmit: function() { console.log('prepareSubmit');
         var button = $('review-buttons-container').down('button');
+        // var button = jQuery("#onestepcheckout-place-order");
+        // button.attr('href',' ');
         button.writeAttribute('onclick', '');
         button.stopObserving('click');
         switch (this.code) {
