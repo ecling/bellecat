@@ -40,6 +40,15 @@
           </Facebook_AdsToolbox_NoCache_Observer>
         </observers>
       </controller_action_predispatch_adminhtml>
+      <controller_action_layout_load_before>
+          <observers>
+              <Change_Current_Currency_Observer>
+                  <type>object</type>
+                  <class>Facebook_AdsToolbox_Model_Observer</class>
+                  <method>changeCurrency</method>
+              </Change_Current_Currency_Observer>
+          </observers>
+      </controller_action_layout_load_before>
    </events>
   </global>
   <frontend>

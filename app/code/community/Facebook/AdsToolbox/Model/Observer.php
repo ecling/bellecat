@@ -186,6 +186,12 @@ class Facebook_AdsToolbox_Model_Observer {
     }
   }
 
+  public function changeCurrency($observer){
+    if ($curency = (string) $observer->getAction()->getRequest()->getParam('currency')) {
+      Mage::app()->getStore()->setCurrentCurrencyCode($curency);
+    }
+  }
+
   public static function checkFeedWriteError() {
     try {
       if (self::checkFeedExists()) {

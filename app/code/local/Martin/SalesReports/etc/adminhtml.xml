@@ -15,6 +15,16 @@
                     <sort_order>1</sort_order>
                     <action>adminhtml/salesreports_product/index</action>
                 </product>
+                <order_status module="salesreports" translate="title">
+                    <title>Order Status Reports</title>
+                    <sort_order>2</sort_order>
+                    <action>adminhtml/salesreports_product/index</action>
+                </order_status>
+                <order_ordered module="salesreports" translate="title">
+                    <title>Ordered Product Reports</title>
+                    <sort_order>3</sort_order>
+                    <action>adminhtml/salesreports_product/index</action>
+                </order_ordered>
             </children>
         </salesreports>
     </menu>
