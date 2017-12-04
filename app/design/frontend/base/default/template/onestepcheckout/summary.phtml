@@ -55,7 +55,7 @@ $payment = $this->getQuote()->getPayment()->getMethod();
             <?php endif; ?>
         </td>
         <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
-        <td class="total"><?php echo '($'.$item->getRowTotal().')'; ?></td>
+        <td class="total"><?php echo '($'.number_format($item->getBaseRowTotal(),2).')'; ?></td>
         <?php endif; ?>
     </tr>
     <?php endforeach; ?>
@@ -73,15 +73,18 @@ $payment = $this->getQuote()->getPayment()->getMethod();
 
             if($code == 'subtotal')    {
                 $total_name = $this->__('Subtotal');
+                $base_value = $this->getQuote()->getShippingAddress()->getBaseSubtotal();
             }
             elseif($code == 'shipping')    {
                 $total_name = $this->__('Shipping');
                 if($checkoutHelper->settings['display_tax_included'])   {
                     $value += $this->getQuote()->getShippingAddress()->getShippingTaxAmount();
                 }
-                            }
+                $base_value = $this->getQuote()->getShippingAddress()->getBaseShippingAmount();
+            }
             elseif($code == 'grand_total')    {
                 $total_name = $this->__('Grand total');
+                $base_value = $this->getQuote()->getBaseGrandTotal();
             }
             else    {
                 $total_name = $total->getTitle();
@@ -96,7 +99,7 @@ $payment = $this->getQuote()->getPayment()->getMethod();
         </td>
         <?php if($current_code!='USD'&&$payment=='paypal_express'): ?>
         <td class="value">
-            <?php echo '($'.$value.')'; ?>
+            <?php echo '($'.number_format($base_value,2).')'; ?>
         </td>
         <?php endif; ?>
     </tr>
