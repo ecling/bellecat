@@ -16,7 +16,17 @@ include 'app/Mage.php';
 Mage::app();
 //Mage::log('test',null,'test.log');
 //echo Mage::getSingleton('core/date')->gmtTimestamp('2017-11-08 02:06:42');
-echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
+//echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
+
+$startTime = '2017/11/27 10:15:00';
+if($startTime<='2017/11/25 17:15:00'){
+    $endTime = '2017/11/25 17:15:00';
+}elseif($startTime<='2017/11/26 17:15:00'){
+    $endTime = '2017/11/26 17:15:00';
+}elseif($startTime<='2017/11/27 17:15:00'){
+    $endTime = '2017/11/27 17:15:00';
+}
+var_dump($endTime);
 exit();
 
 $test =  Mage::getModel('directory/currency')->getCurrencyRates('EUR','USD');
