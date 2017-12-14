@@ -93,12 +93,15 @@ class Facebook_AdsToolbox_Model_Observer {
 
   public function internalGenerateFacebookProductFeed(
     $throwException = false,
-    $checkCache = true
+    $checkCache = true,
+    $store_id = NULL,
+    $currency = 'USD'
   ) {
     FacebookProductFeed::log('feed generation start...');
     $time_start = time();
     $supportzip = extension_loaded('zlib');
     $feed = self::getFeedObject();
+    $feed->setConfig($store_id,$currency);
     $feed_target_file_path = $feed->getTargetFilePath($supportzip);
     $format = ($feed instanceof FacebookProductFeedTSV) ? 'TSV' : 'XML';
 

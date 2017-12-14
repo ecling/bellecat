@@ -161,6 +161,12 @@ class FacebookProductFeed {
     return '';
   }
 
+  public function setConfig($store_id = NULL,$currency = 'USD'){
+      $this->storeId = $store_id;
+      $this->currency = $currency;
+      return $this;
+  }
+
   protected function getFileName() {
     return '';
   }
@@ -208,7 +214,7 @@ class FacebookProductFeed {
     if (!filter_var($product_link, FILTER_VALIDATE_URL)) {
       $product_link = $this->store_url . $product_link;
     }
-    $product_link .= '?utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content=Dynamicads';
+    $product_link .= '?currency='.$this->currency.'&utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content=Dynamicads';
     $items[self::ATTR_LINK] = $this->buildProductAttr(
       self::ATTR_LINK,
       $product_link);
@@ -251,7 +257,7 @@ class FacebookProductFeed {
     $items[self::ATTR_PRICE] = $this->buildProductAttr('price',
       sprintf('%s %s',
         $this->stripCurrencySymbol($price),
-        'EUR'));
+        $this->currency));
 
     $items[self::ATTR_SHORT_DESCRIPTION] = $this->buildProductAttr(self::ATTR_SHORT_DESCRIPTION,
       $product->getShortDescription());
@@ -365,8 +371,11 @@ class FacebookProductFeed {
     
     $hot_date = time()-30*24*3600;
     $hot_date = date('Y-m-d H:i:s',$hot_date);
-        
-    $stores  = Mage::app()->getStores();
+    if($this->storeId){
+        $stores[] = Mage::app()->getStore($this->storeId);
+    }else {
+        $stores = Mage::app()->getStores();
+    }
     foreach($stores as $store){
         $this->store_id = $store->getStoreId();
         
@@ -711,7 +720,8 @@ class FacebookProductFeed {
     }
     if (!isset($this->current_currency)) {
       //$this->current_currency = Mage::app()->getStore($this->store_id)->getCurrentCurrencyCode();
-      $this->current_currency = 'EUR';
+      //$this->current_currency = 'EUR';
+        $this->current_currency = $this->currency;
     }
 
     if ($this->base_currency === $this->current_currency) {
