@@ -40,8 +40,8 @@ if(!$is_payment){
 
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-    if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://www.bellecat.com/')){
-    //if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://test.bellecat.com/')){
+    //if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://www.bellecat.com/')){
+    if(!isset($_SERVER['HTTP_REFERER']) || !strstr($_SERVER['HTTP_REFERER'], 'http://test.bellecat.com/')){
         if(!$is_payment) {
             echo "error";
             define('MAGENTO_ROOT', getcwd());

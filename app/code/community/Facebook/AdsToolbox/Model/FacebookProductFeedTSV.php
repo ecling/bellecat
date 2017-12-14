@@ -43,7 +43,17 @@ class FacebookProductFeedTSV extends FacebookProductFeed {
   }
 
   protected function getFileName() {
-    return self::TSV_FEED_FILENAME;
+      $name = self::TSV_FEED_FILENAME;
+
+      if($this->storeId){
+          $store = Mage::app()->getStore($this->storeId);
+          $store_code = $store->getCode();
+          $name = $store_code.'_'.$name;
+          $name = strtolower($this->currency).'_'.$name;
+      }
+
+      return $name;
+    //return self::TSV_FEED_FILENAME;
   }
 
   protected function buildHeader() {
