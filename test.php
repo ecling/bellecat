@@ -19,8 +19,19 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 var_dump($ip);
 
 //echo Mage::getSingleton('core/date')->gmtTimestamp('2017-11-08 02:06:42');
-echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
->>>>>>> origin/master
+
+//echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
+
+$startTime = '2017/11/27 10:15:00';
+if($startTime<='2017/11/25 17:15:00'){
+    $endTime = '2017/11/25 17:15:00';
+}elseif($startTime<='2017/11/26 17:15:00'){
+    $endTime = '2017/11/26 17:15:00';
+}elseif($startTime<='2017/11/27 17:15:00'){
+    $endTime = '2017/11/27 17:15:00';
+}
+var_dump($endTime);
+
 exit();
 
 $test =  Mage::getModel('directory/currency')->getCurrencyRates('EUR','USD');
@@ -70,5 +81,5 @@ $products = Mage::getResourceModel('catalog/product_collection')
 Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($products);
 Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($products);
 
-print_r((string)$products->getSelect());s
+print_r((string)$products->getSelect());
 

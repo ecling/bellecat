@@ -9,6 +9,7 @@
                     <visibility>0</visibility>
                 </action>
             </block>
+            <block type="salesreports/adminhtml_order_status" name="order.status.chart" template="salesreports/order/status/chart.phtml" />
             <block type="salesreports/adminhtml_order_num" name="order.num.chart" template="salesreports/order/num/chart.phtml" />
         </reference>
     </adminhtml_salesreports_order_index>
@@ -22,6 +23,7 @@
                     <visibility>0</visibility>
                 </action>
             </block>
+            <block type="salesreports/adminhtml_product_ordered" name="ordered.chart" template="salesreports/product/ordered/chart.phtml" />
             <block type="salesreports/adminhtml_product" name="product" />
         </reference>
     </adminhtml_salesreports_product_grid>
