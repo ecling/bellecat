@@ -1,5 +1,7 @@
 <?php
-
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 /**
  * Controller for Checkout.com Webhooks
  *
@@ -118,8 +120,10 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                     Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
 
                     if(!is_null($result['order_increment_id'])){
+
+                        Mage::log('callbackAction', null, 'ckonew.log', true);
                         $order->cancel();
-                        $order->addStatusHistoryComment('Order has been cancelled. - callback');
+                        $order->addStatusHistoryComment('Order has been cancelled.');
                         $order->save();
 
                         /* Restore quote session */
@@ -159,17 +163,15 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         if(!is_null($lastOrderIncrementId)){
             $order = Mage::getModel('sales/order')->loadByIncrementId($lastOrderIncrementId);
-            
-            if($order->getStatusLabel() != 'Pending'){
-                $order->cancel();
-                $order->setStatus('canceled');
-                $order->setState('canceled');
-                $order->addStatusHistoryComment('Order has been cancelled. - Fail');
-                $order->save();
-            }
+            $order->cancel();
+            $order->setStatus('canceled');
+            $order->setState('canceled');
+            $order->addStatusHistoryComment('Order has been cancelled.');
+            $order->save();
 
             $helper             = Mage::helper('chargepayment');
             $helper->restoreQuoteSession($order);
+            Mage::log('failAction', null, 'ckonew.log', true);
         }
 
         return $this->_redirectUrl($redirectUrl);
@@ -238,21 +240,19 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         $order              = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $helper             = Mage::helper('chargepayment');
 
-
         if (!$order->getId()) {
             $this->norouteAction();
             return;
         }
 
-        if (!$cardToken ) { 
+        if (!$cardToken) {
             Mage::getSingleton('core/session')->addError('Your payment has been cancelled. Please enter your card details and try again.');
             $result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
+            $order->cancel();
+            $order->addStatusHistoryComment('Order has been cancelled.');
+            $order->save();
 
-            // if($order->getStatusLabel() != 'Pending'){
-            //     $order->cancel();
-            //     $order->addStatusHistoryComment('Order has been cancelled. - Hosted');
-            //     $order->save();
-            // }
+            Mage::log('No card token', null, 'ckonew.log', true);
 
             /* Restore quote session */
             $helper->restoreQuoteSession($order);
@@ -272,8 +272,7 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                     ->setHostedPaymentRedirect(NULL)
                     ->setHostedPaymentParams(NULL)
                     ->setHostedPaymentConfig(NULL)
-                    ->setSecretKey(NULL)
-                    ->setCcId(NULL);
+                    ->setSecretKey(NULL);
                     
                 Mage::getSingleton('core/session')->unsHostedCardId();
                 
@@ -284,19 +283,15 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
                 $session
                     ->setHostedPaymentRedirect(NULL)
                     ->setHostedPaymentConfig(NULL)
-                    ->setHostedPaymentParams(NULL)
-                    ->setCcId(NULL);;
+                    ->setHostedPaymentParams(NULL);
 
                 $this->_redirectUrl($result['redirect']);
                 break;
             case 'error':
                 Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
-
-                if($order->getStatusLabel() != 'Pending'){
-                    $order->cancel();
-                    $order->addStatusHistoryComment('Order has been cancelled. Hosted switch');
-                    $order->save();
-                }
+                $order->cancel();
+                $order->addStatusHistoryComment('Order has been cancelled.');
+                $order->save();
 
                 /* Restore quote session */
                 $helper->restoreQuoteSession($order);
