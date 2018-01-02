@@ -9,8 +9,10 @@ class Martin_SalesReports_Block_Adminhtml_Product_Ordered extends Mage_Adminhtml
         }
 
         if($to = $this->helper('salesreports')->getParam('to')){
-            $to = DateTime::createFromFormat('m/d/Y',$to);
-            $to = $to->format('Y-m-d');
+            $to = strtotime($to)+3600*24;
+            $to = date('Y-m-d',$to);
+            //$to = DateTime::createFromFormat('m/d/Y',$to);
+            //$to = $to->format('Y-m-d');
         }else{
             $to  = date('Y-m-d',time());
         }
@@ -25,7 +27,8 @@ class Martin_SalesReports_Block_Adminhtml_Product_Ordered extends Mage_Adminhtml
             ->columns("DATE_FORMAT(order.created_at,'%y/%m/%d') AS date")
             ->columns("SUM(main_table.qty_ordered) AS subtotal")
             ->where('order.created_at>=?',array('from'=>$from))
-            ->where('order.created_at<=?',array('to'=>$to))
+            ->where('order.created_at<?',array('to'=>$to))
+            ->where("order.status='complete' OR order.status='processing'")
             ->group('date');
 
         return $collection;

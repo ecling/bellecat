@@ -30,16 +30,22 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
         }
         
         if($to = $this->helper('salesreports')->getParam('to')){
-            $to = DateTime::createFromFormat('m/d/Y',$to);
-            $to = $to->format('Y-m-d');
+            $to = strtotime($to)+3600*24;
+            $to = date('Y-m-d',$to);
+            //$to = DateTime::createFromFormat('m/d/Y',$to);
+            //$to = $to->format('Y-m-d');
         }else{
             $to  = date('Y-m-d',time());
         }
         
-        $collection->addAttributeToFilter('created_at',array('from'=>$from,'to'=>$to));
+        //$collection->addAttributeToFilter('created_at',array('from'=>$from,'to'=>$to));
             
         $collection->getSelect()
             ->columns("sum(qty_ordered) as num")
+            ->joinLeft('sales_flat_order AS order','main_table.order_id=order.entity_id','')
+            ->where('order.created_at>=?',array('from'=>$from))
+            ->where('order.created_at<?',array('to'=>$to))
+            ->where("order.status='complete' OR order.status='processing'")
             ->order('num desc')
             ->group('product_id');
         
