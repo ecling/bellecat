@@ -7,6 +7,8 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
         $this->setUseAjax(true);
         $this->setDefaultSort('entity_id');
         $this->setSaveParametersInSession(true);
+
+        $this->setTemplate('salesreports/product/grid.phtml');
     }
     
     protected function _prepareCollection()
