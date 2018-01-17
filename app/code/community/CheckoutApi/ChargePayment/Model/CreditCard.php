@@ -86,10 +86,8 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
             $info->setCcLast4($result['cc_number']);
             $info->setCcType($result['cc_type']);
             $info->setCheckoutApiCardId($result['checkout_api_card_id']);
+            $info->setCcCid($result['cc_id']);
         }
-
-
-
         
         return $this;
     }
@@ -124,11 +122,20 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         if ($paymentInfo instanceof Mage_Sales_Model_Order_Payment) {
             $billingCountry     = $paymentInfo->getOrder()->getBillingAddress()->getCountryId();
             $billingTelephone   = $paymentInfo->getOrder()->getBillingAddress()->getTelephone();
-            $shippingTelephone  = $paymentInfo->getOrder()->getShippingAddress()->getTelephone();
+            $verifyShipping     = $paymentInfo->getOrder()->getShippingAddress()? true : false;
+
+            if($verifyShipping){
+                $shippingTelephone  = $paymentInfo->getOrder()->getShippingAddress()->getTelephone();
+            }
+            
         } else {
             $billingCountry     = $paymentInfo->getQuote()->getBillingAddress()->getCountryId();
             $billingTelephone   = $paymentInfo->getQuote()->getBillingAddress()->getTelephone();
-            $shippingTelephone  = $paymentInfo->getQuote()->getShippingAddress()->getTelephone();
+            $verifyShipping     = $paymentInfo->getQuote()->getShippingAddress()? true : false;
+
+            if($verifyShipping){ 
+                $shippingTelephone  = $paymentInfo->getQuote()->getShippingAddress()->getTelephone();
+            }
         }
 
         if (!$this->canUseForCountry($billingCountry)) {
@@ -138,9 +145,16 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         /**
          * Validate phone numbers
          */
-        if (!$this->_validateTelephone($billingTelephone) || !$this->_validateTelephone($shippingTelephone)) {
+        if (!$this->_validateTelephone($billingTelephone)) {
             Mage::throwException(Mage::helper('chargepayment')->__('Invalid Phone Number Format.'));
         }
+
+        if(isset($shippingTelephone)){
+            if (!$this->_validateTelephone($shippingTelephone)) {
+                Mage::throwException(Mage::helper('chargepayment')->__('Invalid Phone Number Format.'));
+            }
+        }
+
 
         return $this;
     }
@@ -163,7 +177,6 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
 		
         $isDebug            = $this->isDebug();
         $isCurrentCurrency  = $this->getIsUseCurrentCurrency();
-
 
         $Api        = CheckoutApi_Api::getApi(array('mode'=>$this->getEndpointMode()));
         $order      = $payment->getOrder();
@@ -203,7 +216,9 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
                     $payment
                         ->setAdditionalInformation('payment_token', $entityId)
                         ->setAdditionalInformation('payment_token_url', $redirectUrl)
-                        ->setAdditionalInformation('use_current_currency', $isCurrentCurrency);
+                        ->setAdditionalInformation('use_current_currency', $isCurrentCurrency)
+                        ->setTransactionId($entityId)
+                        ->setIsTransactionPending(true);
 
                     $session->addPaymentToken($entityId);
                     $session
@@ -211,7 +226,7 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
                         ->setPaymentRedirectUrl($redirectUrl)
                         ->setEndpointMode($this->getEndpointMode())
                         ->setSecretKey($this->_getSecretKey())
-                        ->setNewOrderStatus($this->getNewOrderStatus())
+                        ->setNewOrderStatus(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
                     ;
                 } else {
                     Mage::getModel('chargepayment/customerCard')->saveCard($payment, $result);
@@ -263,7 +278,7 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
      * @version 20151007
      */
     protected function _validateTelephone($phone) {
-        return strlen($phone) >= 7 ? true : false;
+        return strlen($phone) >= 6 ? true : false;
     }
 
     /**
@@ -294,7 +309,6 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
 
         /* START: Prepare data */
         $billingAddress     = $order->getBillingAddress();
-        $shippingAddress    = $order->getShippingAddress();
         $orderedItems       = $order->getAllItems();
         $currencyDesc       = $isCurrentCurrency ? $order->getOrderCurrencyCode() : $order->getBaseCurrencyCode();
         $orderId            = $order->getIncrementId();
@@ -311,19 +325,6 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
             'city'          => $billingAddress->getCity(),
             'state'         => $billingAddress->getRegion(),
             'phone'         => array('number' => $billingAddress->getTelephone())
-        );
-
-        $street = Mage::helper('customer/address')
-            ->convertStreetLines($shippingAddress->getStreet(), 2);
-
-        $shippingAddressConfig = array(
-            'addressLine1'  => $street[0],
-            'addressLine2'  => $street[1],
-            'postcode'      => $shippingAddress->getPostcode(),
-            'country'       => $shippingAddress->getCountry(),
-            'city'          => $shippingAddress->getCity(),
-            'state'         => $shippingAddress->getRegion(),
-            'phone'         => array('number' => $shippingAddress->getTelephone()),
         );
 
         $products = array();
@@ -364,7 +365,6 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         $config['postedParam']['autoCapture']  = $autoCapture;
         $config['postedParam']['autoCapTime']  = $this->getAutoCapTime();
 
-
         $config['autoCapTime']  = $this->getAutoCapTime();
         $config['autoCapture'] = $autoCapture;
         $config['chargeMode']   = $this->getIs3D();
@@ -384,8 +384,10 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         $checkoutApiCardId = $payment->getCheckoutApiCardId();
 
 
+
         if (!empty($checkoutApiCardId)) {
             $config['cardId'] = $checkoutApiCardId;
+            $config ['cvv'] = $payment->getCcCid();
         } else {
             $config['card'] = array(
                 'name'              => $payment->getCcOwner(),
@@ -397,7 +399,26 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
             );
         }
 
-        $config['shippingDetails']  = $shippingAddressConfig;
+        $shippingAddress = $order->getShippingAddress();
+
+        if(!empty($shippingAddress)){
+
+            $street = Mage::helper('customer/address')
+                ->convertStreetLines($shippingAddress->getStreet(), 2);
+
+            $shippingAddressConfig = array(
+                'addressLine1'  => $street[0],
+                'addressLine2'  => $street[1],
+                'postcode'      => $shippingAddress->getPostcode(),
+                'country'       => $shippingAddress->getCountry(),
+                'city'          => $shippingAddress->getCity(),
+                'state'         => $shippingAddress->getRegion(),
+                'phone'         => array('number' => $shippingAddress->getTelephone()),
+            );
+
+            $config['shippingDetails']  = $shippingAddressConfig;
+        }
+
         $config['products']         = $products;
 
         $config['metadata']         = array(
@@ -445,8 +466,6 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         $savedCard  = $data->getCustomerCard();
         $card       = $data->getCcNumber();
 
-       
-
         if (empty($savedCard) && empty($card)) {
             Mage::throwException(Mage::helper('chargepayment')->__('Please check your card data.'));
         }
@@ -491,7 +510,8 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
         $result['cc_number']            = $customerCard->getCardNumber();
         $result['cc_type']              = $customerCard->getCardType();
         $result['checkout_api_card_id'] = $customerCard->getCardId();
-        $result['save_card_check'] = $data->getSaveCardCheck();
+        $result['save_card_check']      = $data->getSaveCardCheck();
+        $result['cc_id']                = $data->getCcId();
 
         return $result;
     }
@@ -585,6 +605,18 @@ class CheckoutApi_ChargePayment_Model_CreditCard extends CheckoutApi_ChargePayme
 
      public function getSaveCardSetting(){
         return Mage::helper('chargepayment')->getConfigData($this->_code, 'saveCard');
+    }
+
+    public function getSecretKey() {
+        return Mage::helper('chargepayment')->getConfigData($this->_code, 'secretkey');
+    }
+   
+    public function getMode() {
+        return Mage::helper('chargepayment')->getConfigData($this->_code, 'mode');
+    }
+
+    public function getCvvVerification() {
+        return Mage::helper('chargepayment')->getConfigData($this->_code, 'cvvVerification');
     }
 
 }

@@ -36,15 +36,20 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
         if (!($data instanceof Varien_Object)) {
             $data = new Varien_Object($data);
         }
+
         $info   = $this->getInfoInstance()
             ->setCheckoutApiCardId('')
-            ->setPoNumber($data->getSaveCardCheck());
+            ->setPoNumber($data->getSaveCardCheck())
+            ->setCcCid($data->getCcId());
 
         $result = $this->_getSavedCartDataFromPost($data);
 
         if (!empty($result)) {
             $cardId = $result['checkout_api_card_id'];
             Mage::getSingleton('core/session')->setHostedCardId($cardId);
+            //$info->setCcCid($result['cc_id']);
+            $ccId = $result['cc_id'];
+            Mage::getSingleton('core/session')->setCcId($ccId);
         }
 
         return $this;
@@ -70,7 +75,7 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
         $redirect = Mage::getModel('core/url')->getUrl('chargepayment/api/hosted/');
 
         if(is_null($isNewCard)){
-            return $redirectUrl;
+            return false;
         }
 
         if ($redirectUrl && $isNewCard == 'new_card') {
@@ -124,6 +129,7 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
         }
 
         $result['checkout_api_card_id'] = $customerCard->getCardId();
+        $result['cc_id']                = $data->getCcId();
 
         return $result;
     }
@@ -411,9 +417,6 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-
-        $tmp = explode(',', $ip); 
-        $ip = end($tmp);
 
         $config['postedParam'] = array (
             'trackId'           => NULL,
@@ -802,10 +805,10 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
              $config['postedParam']['cardToken'] = $cardToken;
         } else {
              $config['postedParam']['cardId'] = $cardToken;
+             $config['postedParam']['cvv']    = Mage::getSingleton('core/session')->getCcId();
         }
 
         $config['postedParam']['trackId']   = $order->getIncrementId();
-       
 
         $response = $Api->createCharge($config);
 
@@ -837,7 +840,8 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
             $payment
                 ->setAdditionalInformation('payment_token', $entityId)
                 ->setAdditionalInformation('payment_token_url', $redirectUrl)
-                ->setAdditionalInformation('use_current_currency', $isCurrentCurrency);
+                ->setAdditionalInformation('use_current_currency', $isCurrentCurrency)
+                ->setTransactionId($entityId);
             $payment->save();
             $order->save();
 
@@ -1083,4 +1087,5 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
     public function getSaveCardSetting(){
         return Mage::helper('chargepayment')->getConfigData($this->_code, 'saveCard');
     }
+
 }

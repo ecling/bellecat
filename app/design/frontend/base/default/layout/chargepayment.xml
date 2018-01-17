@@ -46,6 +46,11 @@
                     <template>checkoutapi/chargepayment/frameKit.phtml</template>
                 </action>
             </block>
+            <block name="checkoutapi.frameEmbedded" type="chargepayment/frameEmbedded" >
+                <action method="setTemplate" ifconfig="payment/checkoutapiembedded/active" >
+                    <template>checkoutapi/chargepayment/frameEmbedded.phtml</template>
+                </action>
+            </block>
         </reference>
     </checkout_onepage_review>
     <chargepayment_api_redirect>
@@ -59,7 +64,6 @@
     <default>
         <reference name="head">
             <action method="addJs"><script>checkout_api/chargepayment.js</script></action>
-            <!-- <action method="addJs"><script>checkout_api/core/chargepayment.js</script></action> -->
             <action method="addCss"><stylesheet>css/checkout-styles.css</stylesheet></action>
         </reference>
         <reference name="after_body_start">
@@ -68,11 +72,6 @@
                     <template>checkoutapi/chargepayment/default.phtml</template>
                 </action>
             </block>
-            <!-- <block name="checkoutapi.frame" type="chargepayment/frame" >
-                <action method="setTemplate" ifconfig="payment/checkoutapijs/active" >
-                    <template>checkoutapi/chargepayment/frame.phtml</template>
-                </action>
-            </block> -->
         </reference>
     </default>
 </layout>

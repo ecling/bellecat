@@ -8,26 +8,23 @@ checkoutApi.prototype = {
         this.phpMethodCode      = 'checkoutapicard';
         this.jsMethodCode       = 'checkoutapijs';
         this.kitMethodCode      = 'checkoutapikit';
+        this.hostedMethodCode   = 'hosted';
+        this.embeddedMethodCode = 'checkoutapiembedded';
         this.preparePayment();
     },
-    preparePayment: function() {
+    preparePayment: function() { 
         switch (this.controller) {
             case 'onepage':
                 this.prepareSubmit();
                 break;
-             // case 'index':
-             //    this.prepareSubmit();
-             //    break;
             case 'sales_order_create':
             case 'sales_order_edit':
                 this.prepareAdminSubmit();
                 break;
         }
     },
-    prepareSubmit: function() { console.log('prepareSubmit');
+    prepareSubmit: function() {
         var button = $('review-buttons-container').down('button');
-        // var button = jQuery("#onestepcheckout-place-order");
-        // button.attr('href',' ');
         button.writeAttribute('onclick', '');
         button.stopObserving('click');
         switch (this.code) {
@@ -44,6 +41,11 @@ checkoutApi.prototype = {
             case this.kitMethodCode:
                 button.observe('click', function() {
                     this.checkoutKit();
+                }.bind(this));
+                break;
+            case this.embeddedMethodCode:
+                button.observe('click', function() {
+                    this.checkoutEmbeded();
                 }.bind(this));
                 break;
         }
@@ -88,9 +90,8 @@ checkoutApi.prototype = {
     },
     checkoutApiFrame: function() {
         if (this.agreementIsValid()) {
-
-            if(jQuery('#checkoutapi-new-card').length > 0){
-                if(jQuery('#checkoutapi-new-card').prop("checked")== true){
+            if($('checkoutapi-new-card')){
+                if($('checkoutapi-new-card').checked){
                     CKOAPIJS.open();
                     if (CKOAPIJS.isMobile()) {
                         $('checkout-api-js-hover').show();
@@ -104,7 +105,6 @@ checkoutApi.prototype = {
                     $('checkout-api-js-hover').show();
                 }
             }
-
         } else {
             alert('Please agree to all the terms and conditions before placing the order.');
             return;
@@ -176,5 +176,22 @@ checkoutApi.prototype = {
             alert('Please agree to all the terms and conditions before placing the order.');
             return;
         }
+    },
+    checkoutEmbeded: function(){
+        if (this.agreementIsValid()) {
+            if($('checkoutapiembedded-checkoutapi-new-card')){
+                if($('checkoutapiembedded-checkoutapi-new-card').checked){
+                    if (Frames.isCardValid()) Frames.submitCard();
+                } else {
+                    this.saveOrderSubmit();
+                }
+            } else {
+                if (Frames.isCardValid()) Frames.submitCard();
+            }
+        } else {
+            alert('Please agree to all the terms and conditions before placing the order.');
+            return;
+        }
+
     }
 };

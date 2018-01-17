@@ -123,8 +123,6 @@ class CheckoutApi_ChargePayment_Model_Webhook
             $order->setStatus(Mage_Sales_Model_Order::STATE_PROCESSING);
             $order->save();
 
-            //付款成功增加邮件发送
-            $order->sendNewOrderEmail();
 
             $order = $modelOrder->loadByIncrementId($trackId);
 
@@ -187,7 +185,7 @@ class CheckoutApi_ChargePayment_Model_Webhook
      *
      * @version 20151130
      */
-    public function refundOrder($response) { 
+    public function refundOrder($response) {
         $trackId        = (string)$response->message->trackId;
         $transactionId  = (string)$response->message->id;
         $modelOrder     = Mage::getModel('sales/order');
@@ -252,7 +250,6 @@ class CheckoutApi_ChargePayment_Model_Webhook
             $message = Mage::helper('sales')->__('Refunded amount of %s. Transaction ID: "%s"', $formattedAmount, $transactionId);
 
             $transactionModel = Mage::getModel('sales/order_payment_transaction');
-
             $transactionModel
                 ->setOrderPaymentObject($order->getPayment())
                 ->setTxnId($transactionId)
