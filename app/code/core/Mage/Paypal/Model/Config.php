@@ -769,7 +769,7 @@ class Mage_Paypal_Model_Config
         $country = Mage::getStoreConfig(Mage_Paypal_Helper_Data::MERCHANT_COUNTRY_CONFIG_PATH);
         if ($country == Mage_Paypal_Helper_Data::US_COUNTRY) {
             //return 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-medium.png';
-            return 'http://www.bellecat.com/skin/frontend/tm_themes/theme759/images/paypal.jpg';
+            return 'http://www.bellecat.com/skin/frontend/tm_themes/theme759/images/paypal.png';
         }
         if ($this->areButtonsDynamic()) {
             return $this->_getDynamicImageUrl(self::EC_BUTTON_TYPE_MARK, $localeCode, $orderTotal, $pal);

@@ -109,6 +109,52 @@
 						</data_width>
 					</fields>
 				</facebook_page>
+				<facebook_feed>
+					<label>Facebook Feed</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>30</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>0</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<new translate="label comment">
+							<label>New Num: </label>
+							<comment><![CDATA[The latest product number]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</new>
+						<new_data translate="label comment">
+							<label>New Data: </label>
+							<comment><![CDATA[The latest product days]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</new_data>
+						<hot translate="label comment">
+							<label>Top Sales Num: </label>
+							<comment><![CDATA[Hot Sales number]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</hot>
+						<hot_data translate="label comment">
+							<label>Top Sales Data: </label>
+							<comment><![CDATA[X days hot sales]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</hot_data>
+					</fields>
+				</facebook_feed>
 			</groups>
 		</facebook>
 	</sections>

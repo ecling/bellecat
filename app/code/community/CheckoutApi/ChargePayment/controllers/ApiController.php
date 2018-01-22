@@ -246,7 +246,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         if (!$cardToken ) { 
             Mage::getSingleton('core/session')->addError('Your payment has been cancelled. Please enter your card details and try again.');
-            $result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
+            //$result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
+            $result = array('status' => 'error', 'redirect' => Mage::getUrl('onestepcheckout'));
 
             // if($order->getStatusLabel() != 'Pending'){
             //     $order->cancel();
