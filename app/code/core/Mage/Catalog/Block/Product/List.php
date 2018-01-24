@@ -87,7 +87,7 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
             $this->_productCollection = $layer->getProductCollection();
 
             $this->prepareSortableFieldsByCategory($layer->getCurrentCategory());
-            
+
             if($this->getSortBy()){
                 if($this->getSortBy()=='hot'){
                     $date = date('Y-m-d',time()-3600*24*30);
