@@ -1,7 +1,7 @@
 <?php
 $data = $this->getCollection();
 foreach($data as $item){
-    $array[] = array($item->getDate(),(int)$item->getProcessing(),(int)$item->getComplete(),(int)$item->getPending(),(int)$item->getPendingPayment(),(int)$item->getCanceled(),(int)$item->getClosed());
+    $array[] = array($item->getDate(),(int)$item->getProcessing(),(int)$item->getComplete(),(int)$item->getPending(),(int)$item->getPendingPayment(),(int)$item->getCanceled(),(int)$item->getClosed(),(int)$item->getProcessing()+(int)$item->getComplete());
 }
 $jsonData = Mage::helper('core')->jsonEncode($array);
 ?>
@@ -20,6 +20,7 @@ $jsonData = Mage::helper('core')->jsonEncode($array);
         data.addColumn('number', 'pending_payment');
         data.addColumn('number', 'cancel');
         data.addColumn('number', 'closed');
+        data.addColumn('number','Total')
         data.addRows(<?php echo $jsonData;?>);
 
         var table = new google.visualization.Table(document.getElementById('table_div'));

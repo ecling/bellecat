@@ -11,7 +11,7 @@
     <?php if (!empty($tokenResult)): ?>
         <ul class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
             <?php if ($tokenResult['success']):?>
-                <li id="payment_form_<?php echo $this->getMethodCode() ?>_block"></li>
+                <li id="payment_form_<?php echo $this->getMethodCode() ?>_block"><img src="<?php echo $this->getSkinUrl('images/checkout.jpg');?>" /></li>
                 <li>
                     <script type="text/javascript">
                         window.checkoutIntegrationHostedConfig = {
@@ -23,7 +23,7 @@
                             customerName: '<?php echo $tokenResult['customerName'];?>',
                             value: '<?php echo $tokenResult['value'];?>',
                             currency: '<?php echo $tokenResult['currency'];?>',
-                            widgetContainerSelector: '#payment_form_<?php echo $this->getMethodCode() ?>_block',
+                            //widgetContainerSelector: '#payment_form_<?php echo $this->getMethodCode() ?>_block',
                             paymentMode: '<?php echo $this->getPaymentMode();?>',
                             widgetColor: '#333',
                             cardFormMode: '<?php echo $this->getCardFormMode();?>'
