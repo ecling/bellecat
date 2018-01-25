@@ -44,6 +44,7 @@ if($crontab){
         }
 
         if($weight>0&&$cost>0&&$shipping_cost>0){
+            /*
             $bcshipping = Mage::helper('bcshipping')->getShippingCoseByCountry($weight,'NL');
             $price = $cost+$shipping_cost+($weight*$bcshipping->getPrice())+$bcshipping->getAdditionalPrice();
             $price = number_format($price*2/$rate,'2');
@@ -59,6 +60,9 @@ if($crontab){
             if($price>20){
                 $price = $price-5;
             }
+            */
+
+            $price = Mage::helper('bcshipping')->getBasePrice($cost,$shipping_cost,$weight);
 
             if($price>0 && $price!=$old_price && $price_value_id>0){
                 $set = array('value'=>$price);

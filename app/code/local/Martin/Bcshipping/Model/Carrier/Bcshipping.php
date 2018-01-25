@@ -89,10 +89,12 @@ class Martin_Bcshipping_Model_Carrier_Bcshipping
                 }
                 $product_id = $item->getProductId();
                 $product = Mage::getModel('catalog/product')->load($product_id);
+
                 $product_price = $product->getPrice();
-                $product_cost = Mage::helper('bcshipping')->calculate($product,$dest_country_id);
+                //$product_cost = Mage::helper('bcshipping')->calculate($product,$dest_country_id);
+                $product_cost = Mage::helper('bcshipping')->calculateByProduct($product,$dest_country_id);
                 if($product_cost-$product_price>0){
-                    $shipping_cost = $shipping_cost+($product_cost-$product_price-0.01)*$item->getQty();
+                    $shipping_cost = $shipping_cost+($product_cost-$product_price)*$item->getQty();
                 }
                 $qty = $qty+$item->getQty();
             }
