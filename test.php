@@ -1,4 +1,5 @@
 <?php
+echo 'test';
 /*
 echo md5('linglovehuang');
 exit();
