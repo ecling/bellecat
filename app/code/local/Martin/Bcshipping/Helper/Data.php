@@ -30,11 +30,19 @@ class Martin_Bcshipping_Helper_Data extends Mage_Core_Helper_Abstract
             $price = $price-0.99;
         }
 
-        if($price>=15&&$price<=39){
+        if($price>=15&&$price<29){
+            $price = $price-1.99;
+        }
+
+        if($price>=29&&$price<39){
             $price = $price-2.99;
         }
 
-        if($price>39){
+        if($price>=39&&$price<49){
+            $price = $price-3.99;
+        }
+
+        if($price>=49){
             $price = $price-4.99;
         }
         return $price;
