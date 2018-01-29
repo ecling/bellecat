@@ -25,6 +25,7 @@ class Martin_Bcshipping_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     public function getBasePrice($purchase_price,$shipping_cost,$weight,$country='NL'){
+        $country = $rate = Mage::getStoreConfig('bcshipping/general/country');
         $price = $this->calculate($purchase_price,$shipping_cost,$weight,$country);
         if($price<15){
             $price = $price-0.99;
@@ -51,6 +52,7 @@ class Martin_Bcshipping_Helper_Data extends Mage_Core_Helper_Abstract
         $purchase_price = $product->getPurchasePrice();
         $shipping_cost = $product->getShippingCost();
         $weight = $product->getWeight();
+        $country = $rate = Mage::getStoreConfig('bcshipping/general/country');
         return $this->getBasePrice($purchase_price,$shipping_cost,$weight,$country);
     }
 }

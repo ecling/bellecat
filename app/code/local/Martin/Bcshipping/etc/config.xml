@@ -57,6 +57,26 @@
                 <class>Martin_Bcshipping_Block</class>
             </bcshipping>
         </blocks>
+        <events>
+            <admin_system_config_section_save_after>
+                <observers>
+                    <bcshipping_change_config_product_price_crontab_update>
+                        <type>object</type>
+                        <class>Martin_Bcshipping_Model_Observer</class>
+                        <method>updatePriceCrontabByConfig</method>
+                    </bcshipping_change_config_product_price_crontab_update>
+                </observers>
+            </admin_system_config_section_save_after>
+            <bcshipping_rule_save_after>
+                <observers>
+                    <bcshipping_change_rule_product_price_crontab_update>
+                        <type>object</type>
+                        <class>Martin_Bcshipping_Model_Observer</class>
+                        <method>updatePriceCrontabByRule</method>
+                    </bcshipping_change_rule_product_price_crontab_update>
+                </observers>
+            </bcshipping_rule_save_after>
+        </events>
         <sales>
             <shipping>
                 <carriers>

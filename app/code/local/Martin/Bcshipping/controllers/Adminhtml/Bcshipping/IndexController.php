@@ -90,6 +90,8 @@ class Martin_Bcshipping_Adminhtml_Bcshipping_IndexController extends
             try {
                 $model->save();
 
+                Mage::dispatchEvent('bcshipping_rule_save_after',array());
+
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('The Rule has been saved.'));
                 Mage::getSingleton('adminhtml/session')->setTagData(false);
 
@@ -114,6 +116,9 @@ class Martin_Bcshipping_Adminhtml_Bcshipping_IndexController extends
                 }
             }
         }
+
+        Mage::dispatchEvent('bcshipping_rule_save_after',array());
+
         return $this->_redirect('*/*/index', array('_current' => true));
     }
 }
