@@ -2,6 +2,9 @@
 include('app/Mage.php');
 Mage::app();
 
+var_dump($_SERVER['argv']);
+exit();
+
 $ob = Mage::getModel('Facebook_AdsToolbox/observer');
 $obins = new $ob;
 $use_cache = false;
