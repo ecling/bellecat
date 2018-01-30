@@ -94,7 +94,7 @@ class Facebook_AdsToolbox_Model_Observer {
   public function internalGenerateFacebookProductFeed(
     $throwException = false,
     $checkCache = true,
-    $store_id = NULL,
+    $store_id = null,
     $currency = 'USD'
   ) {
     FacebookProductFeed::log('feed generation start...');
