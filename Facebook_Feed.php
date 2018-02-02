@@ -10,7 +10,7 @@ $use_cache = false;
 if( $argv['1'] == 0 ){
     $store_id = null;
 }else {
-    $store_id = 8;
+    $store_id = $argv['1'];
 }
 $currency = $argv['2'];
 $obins->internalGenerateFacebookProductFeed(false, $use_cache,$store_id,$currency);
