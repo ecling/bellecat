@@ -341,8 +341,9 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
             || isset($uri['host']) && $uri['host'] != $request->getHttpHost()
             || isset($uri['path']) && strpos($requestUri, $uri['path']) === false
         ) {
+            $redirectUrl =  $baseUrl.ltrim($requestUri,'/');
             Mage::app()->getFrontController()->getResponse()
-                ->setRedirect($baseUrl, $redirectCode)
+                ->setRedirect($redirectUrl, $redirectCode)
                 ->sendResponse();
             exit;
         }
