@@ -631,7 +631,7 @@ div.onestepcheckout-coupons .error-msg, .success-msg, .note-msg,
 }
 #checkout-payment-method-load img{
     max-width: 100%;
-    width: 200px;
+    /*width: 200px;*/
     float: left;
 }
 .onestepcheckout-place-order{
