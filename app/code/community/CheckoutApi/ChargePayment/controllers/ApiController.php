@@ -246,8 +246,7 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         if (!$cardToken ) { 
             Mage::getSingleton('core/session')->addError('Your payment has been cancelled. Please enter your card details and try again.');
-            //$result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
-            $result = array('status' => 'error', 'redirect' => Mage::getUrl('onestepcheckout'));
+            $result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
 
             // if($order->getStatusLabel() != 'Pending'){
             //     $order->cancel();
@@ -293,11 +292,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
             case 'error':
                 Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
 
-                if($order->getStatusLabel() != 'Pending'){
-                    $order->cancel();
-                    $order->addStatusHistoryComment('Order has been cancelled. Hosted switch');
-                    $order->save();
-                }
+                // if($order->getStatusLabel() != 'Pending'){
+                //     $order->cancel();
+                //     $order->addStatusHistoryComment('Order has been cancelled. Hosted switch');
+                //     $order->save();
+                // }
 
                 /* Restore quote session */
                 $helper->restoreQuoteSession($order);
