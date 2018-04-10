@@ -225,6 +225,17 @@ class Adyen_Payment_Model_Observer
             return $countryCode;
         }
 
+        //ling 登录状态只传地址ID
+        if(Mage::helper('customer')->isLoggedIn()){
+            $customerAddressId = Mage::app()->getRequest()->getPost('billing_address_id', false);
+            if($customerAddressId){
+                $billingAddress = Mage::getModel('customer/address')->load($customerAddressId);
+                if(is_object($billingAddress)){
+                    return $billingAddress->getCountryId();
+                }
+            }
+        }
+
         $billingParams = Mage::app()->getRequest()->getParam('billing');
         if (isset($billingParams['country_id'])) {
             return $billingParams['country_id'];

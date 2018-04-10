@@ -74,6 +74,10 @@ class Idev_OneStepCheckout_Block_Checkout extends Mage_Checkout_Block_Onepage_Ab
                 }
             }
 
+            if(Mage::getSingleton('customer/session')->getDefaultCountry()){
+                $default_country = Mage::getSingleton('customer/session')->getDefaultCountry();
+            }
+
             if(!$default_country)   {
                 if( $this->settings['default_country'] )    {
                     $default_country = $this->settings['default_country'];
@@ -170,6 +174,10 @@ class Idev_OneStepCheckout_Block_Checkout extends Mage_Checkout_Block_Onepage_Ab
 
 
                 $payment = array('method' => $this->settings['default_payment_method'] );
+
+                if(Mage::getSingleton('customer/session')->getDefaultPayment()){
+                    $payment = array('method' =>Mage::getSingleton('customer/session')->getDefaultPayment());
+                }
 
                 try {
                     //$result = $onepage->savePayment($payment);
@@ -327,6 +335,7 @@ class Idev_OneStepCheckout_Block_Checkout extends Mage_Checkout_Block_Onepage_Ab
         $this->_checkPaymentMethod();
 
         $payment = $this->getQuote()->getPayment();
+
         if(is_object($payment)){
 
             try {

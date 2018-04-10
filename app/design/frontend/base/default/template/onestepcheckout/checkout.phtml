@@ -779,11 +779,11 @@ if($$('div.input-error').length > 0) {
         var address2 = $('billing:street2');
         var address = address1.value+' '+address2.value;
         var reg = /\d+/;
-        
+
         var errorMsg = "Note: You didn't write the house number!";
         var advice = '<div class="validation-advice" id="advice-address" style="display:none">'+Translator.translate(errorMsg)+'</div>';
-        
-        if(!reg.test(address)){
+
+        if(address.length>1 && !reg.test(address)){
             if(!$('advice-address')){
                 Element.insert(address1, {'after': advice});
             }
@@ -820,6 +820,7 @@ document.observe('dom:loaded', function() {
             var form = new VarienForm('onestepcheckout-form');
 
             if(!form.validator.validate() || !validateHouseNumber())  {
+
                 Event.stop(e);
             }
             else    {

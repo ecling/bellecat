@@ -68,6 +68,66 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
             $jsPath = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS);
             $html .= '<script src="'.$jsPath.'adyen/payment/epos-device-2.6.0.js"></script>';
         }
+
+        //ga and facebook pixel
+
+        $content_ids = array();
+        foreach($order->getAllVisibleItems() as $_item){
+            $content_ids[] = '"'.$_item->getProductId().'"';
+        }
+        $content_ids = implode(',',$content_ids);
+
+        $html .= '
+                <script>
+                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+                n.push=n;n.loaded=!0;n.version=\'2.0\';n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+                document,\'script\',\'https://connect.facebook.net/en_US/fbevents.js\');
+                fbq(\'init\', \'705787842925898\'); // Insert your pixel ID here.
+                fbq(\'track\', \'PageView\');
+                fbq(\'track\', \'Purchase\', {
+                    source: \'magento\',
+                    version: "1.9.2.2",
+                    pluginVersion: "2.1.14",
+                    content_type: "product", 
+                    content_ids: ['.$content_ids.'],
+                    value: \''. $order->getBaseGrandTotal() .'\',
+                    currency: \''. Mage::app()->getStore()->getCurrentCurrencyCode().'\'
+                  });
+                </script>
+                <noscript><img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id=705787842925898&ev=PageView&noscript=1"
+                /></noscript>
+                ';
+
+
+        $html .= '
+                <script type="text/javascript">
+                (function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');
+        
+                ga(\'create\', \'UA-74088050-1\', \'www.bellecat.com\');
+                ga(\'set\', \'anonymizeIp\', false);
+                ga(\'send\', \'pageview\');
+                </script>
+                ';
+
+        $html .= '
+            <script type="text/javascript">
+            ga(\'require\', \'ecommerce\', \'ecommerce.js\');
+            ga(\'ecommerce:addTransaction\', { \'id\': \''. $order->getData('entity_id').'\', \'affiliation\': \''.Mage::app()->getStore()->getName().'\', \'revenue\': \''.$order->getGrandTotal().'\', \'shipping\': \''. $order->getShippingInclTax() .'\', \'tax\': \''.  $order->getTaxAmount().'\', \'currency\': \''.$order->getOrderCurrencyCode().'\'});
+            ';
+            foreach($order->getAllVisibleItems() as $_item){
+            if($_item->getParentItem()) continue;
+                $html .= 'ga(\'ecommerce:addItem\', {\'id\': \''.$order->getData('entity_id') .'\', \'name\': \''. str_replace("'","\'", $_item->getName()).'\', \'sku\': \''. $_item->getSku().'\', \'price\': \''. $_item->getPrice() .'\', \'quantity\': \''. (int) $_item->getQtyOrdered() .'\'});';
+            }
+       $html .=  'ga(\'ecommerce:send\');
+          </script>
+        ';
+
         $html .= '</head><body class="redirect-body-adyen">';
 
 

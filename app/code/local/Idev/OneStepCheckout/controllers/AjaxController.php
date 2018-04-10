@@ -271,6 +271,7 @@ class Idev_OneStepCheckout_AjaxController extends Mage_Core_Controller_Front_Act
         if(!empty($billing_data['use_for_shipping'])) {
             if(!empty($billing_data['country_id'])){
                 $this->_getOnepage()->getQuote()->getShippingAddress()->setCountryId($billing_data['country_id'])->setCollectShippingRates(true);
+                $this->_getOnepage()->getQuote()->getBillingAddress()->setCountryId($billing_data['country_id'])->setCollectShippingRates(true);
             }
         } else {
             if(!$shipping_data['country_id']){

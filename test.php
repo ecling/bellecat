@@ -1,4 +1,10 @@
 <?php
+include 'app/Mage.php';
+Mage::app();
+
+$orderAmount = (int)Mage::helper('adyen')->formatAmount(0.01, 'EUR');
+var_dump($orderAmount);
+
 /*
 echo md5('linglovehuang');
 exit();
@@ -59,14 +65,14 @@ foreach($rows as $key=>$row){
 }
 
 $collection = Mage::getResourceModel('catalog/product_collection')
-  ->setStore($store_id); 
+  ->setStore($store_id);
 
 $date = time()-10*24*3600;
 $date = date('Y-m-d H:i:s',$date);
-  
+
 $select = $collection->getSelect()
-        ->where("e.created_at>'".$date."' or e.entity_id in (".$in_str.")");  
-  
+        ->where("e.created_at>'".$date."' or e.entity_id in (".$in_str.")");
+
 print_r((string)$collection->getSelect());
 exit();
 

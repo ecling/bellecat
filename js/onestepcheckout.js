@@ -215,7 +215,13 @@ function get_save_billing_function(url, set_methods_url, update_payments)
         parameters['payment_method'] = payment_method;
         parameters['payment[method]'] = payment_method;
         
-        var payment_methods = $$('div.payment-methods')[0];
+        //var payment_methods = $$('div.payment-methods')[1];
+        var payment_methods_arr = $$('div.payment-methods');
+        if(payment_methods_arr.length>1){
+            var payment_methods = payment_methods_arr['1'];
+        }else{
+            var payment_methods = payment_methods_arr['0'];
+        }
         payment_methods.update('<div class="loading-ajax">&nbsp;</div>');
 
         var totals = get_totals_element();
