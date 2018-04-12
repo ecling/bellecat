@@ -242,6 +242,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         if (!$order->getId()) {
             $this->norouteAction();
             return;
+        }else{
+            $session = Mage::getSingleton('checkout/session');
+            $session->setLastSuccessQuoteId($order->getQuoteId());
+            $session->setLastQuoteId($order->getQuoteId());
+            $session->setLastOrderId($order->getId());
         }
 
         if (!$cardToken ) { 
