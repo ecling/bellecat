@@ -3,6 +3,7 @@
     $url    = $this->getPostUrl();
 ?>
 
+<?php if(false): ?>
 <script type="text/javascript">
     <?php if($params['contextId']): ?>
     ga('require', 'ecommerce', 'ecommerce.js');
@@ -15,14 +16,19 @@
     ga('ecommerce:send');
     <?php endif; ?>
 </script>
+<?php endif; ?>
 
 <?php if($params['contextId']): ?>
-<?php 
+<?php
+    /*
     $content_ids = array();
     foreach($_order->getAllVisibleItems() as $_item){
         $content_ids[] = '"'.$_item->getProductId().'"';
     }
+    */
 ?>
+
+<?php if(false): ?>
 <script>
   fbq('track', 'Purchase', {
     source: 'magento',
@@ -34,6 +40,8 @@
     currency: "<?php echo Mage::app()->getStore()->getCurrentCurrencyCode() ?>"
   });
 </script>
+<?php endif; ?>
+
 <?php endif; ?>
 
 <p><center><?php echo $this->__('You will be redirected to the payment gateway.');?></center></p>

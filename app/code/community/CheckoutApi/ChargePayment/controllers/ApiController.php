@@ -231,6 +231,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         $orderIncrementId   = (string)$this->getRequest()->getParam('cko-context-id');
 
+        Mage::log($orderIncrementId,null,'success-e.log');
+
         if(!$orderIncrementId){
             $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         }
@@ -242,6 +244,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         if (!$order->getId()) {
             $this->norouteAction();
             return;
+        }else{
+            $session = Mage::getSingleton('checkout/session');
+            $session->setLastSuccessQuoteId($order->getQuoteId());
+            $session->setLastQuoteId($order->getQuoteId());
+            $session->setLastOrderId($order->getId());
         }
 
         if (!$cardToken ) { 

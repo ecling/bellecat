@@ -849,6 +849,17 @@ class Mage_Checkout_Model_Type_Onepage
                 ->setRedirectUrl($redirectUrl)
                 ->setLastRealOrderId($order->getIncrementId());
 
+            //测试
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+            $log = $ip.','.$this->getQuote()->getId().','.$order->getId();
+            Mage::log($log,null,'success-b.log');
+
             // as well a billing agreement can be created
             $agreement = $order->getPayment()->getBillingAgreement();
             if ($agreement) {

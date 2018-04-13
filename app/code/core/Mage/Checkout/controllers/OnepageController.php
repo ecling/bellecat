@@ -275,6 +275,18 @@ class Mage_Checkout_OnepageController extends Mage_Checkout_Controller_Action
     public function successAction()
     {
         $session = $this->getOnepage()->getCheckout();
+
+        //测试
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        $log = $ip.','.$session->getLastSuccessQuoteId().','.$session->getLastQuoteId().','.$session->getLastOrderId();
+        Mage::log($log,null,'success-a.log');
+
         if (!$session->getLastSuccessQuoteId()) {
             $this->_redirect('checkout/cart');
             return;
