@@ -231,8 +231,6 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         $orderIncrementId   = (string)$this->getRequest()->getParam('cko-context-id');
 
-        Mage::log($orderIncrementId,null,'success-e.log');
-
         if(!$orderIncrementId){
             $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         }
@@ -244,16 +242,12 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
         if (!$order->getId()) {
             $this->norouteAction();
             return;
-        }else{
-            $session = Mage::getSingleton('checkout/session');
-            $session->setLastSuccessQuoteId($order->getQuoteId());
-            $session->setLastQuoteId($order->getQuoteId());
-            $session->setLastOrderId($order->getId());
         }
 
         if (!$cardToken ) { 
             Mage::getSingleton('core/session')->addError('Your payment has been cancelled. Please enter your card details and try again.');
-            $result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
+            //$result = array('status' => 'error', 'redirect' => Mage::helper('checkout/url')->getCheckoutUrl());
+            $result = array('status' => 'error', 'redirect' => Mage::getUrl('onestepcheckout'));
 
             // if($order->getStatusLabel() != 'Pending'){
             //     $order->cancel();
@@ -299,11 +293,11 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
             case 'error':
                 Mage::getSingleton('core/session')->addError('Please check you card details and try again. Thank you');
 
-                // if($order->getStatusLabel() != 'Pending'){
-                //     $order->cancel();
-                //     $order->addStatusHistoryComment('Order has been cancelled. Hosted switch');
-                //     $order->save();
-                // }
+                if($order->getStatusLabel() != 'Pending'){
+                    $order->cancel();
+                    $order->addStatusHistoryComment('Order has been cancelled. Hosted switch');
+                    $order->save();
+                }
 
                 /* Restore quote session */
                 $helper->restoreQuoteSession($order);

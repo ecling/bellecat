@@ -531,7 +531,7 @@ class Mage_Catalog_Model_Url
         $storeRootCategoryPath  = $this->getStores($storeId)->getRootCategoryPath();
         $this->_categories[$storeRootCategoryId] = $this->getResource()->getCategory($storeRootCategoryId, $storeId);
 
-        $lastEntityId = 0;
+        $lastEntityId = 5877;
         $process = true;
 
         while ($process == true) {

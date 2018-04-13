@@ -193,6 +193,30 @@ class Facebook_AdsToolbox_Model_Observer {
     if ($curency = (string) $observer->getAction()->getRequest()->getParam('currency')) {
       Mage::app()->getStore()->setCurrentCurrencyCode($curency);
     }
+
+    /*
+    if ($observer->getAction()->getFullActionName()=='onestepcheckout_index_index') {
+        $lang_arr = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        if (count($lang_arr)>0) {
+            $lang = $lang_arr['0'];
+            $lang =  strtolower($lang);
+
+            $adapter = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $lc_result = $adapter->query("select * from language_country where language_code='".$lang."'");
+            $lc = $lc_result->fetch();
+            if(isset($lc['currency_code'])&&!empty($lc['currency_code'])){
+                Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
+            }
+            if(isset($lc['country_code'])&&!empty($lc['country_code'])){
+                Mage::getSingleton('customer/session')->setDefaultCountry($lc['country_code']);
+            }
+
+            if(isset($lc['payment'])&&!empty($lc['payment'])){
+                Mage::getSingleton('customer/session')->setDefaultPayment($lc['payment']);
+            }
+        }
+    }
+    */
   }
 
   public static function checkFeedWriteError() {

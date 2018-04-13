@@ -140,6 +140,8 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action
                 return $this;
             }
 
+            Mage::log($session->getData(),null,'success-c.log');
+
             // redirect to payment page
             $this->getResponse()->setBody(
                 $this->getLayout()
@@ -281,9 +283,21 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action
 
             if ($result) {
                 $session = $this->_getCheckout();
+
+                //当变换浏览器跳转时传递订单数
+                if(isset($response['merchantReference'])){
+                    $incrementId = $response['merchantReference'];
+                    $order = Mage::getModel('sales/order')->loadByIncrementId($incrementId);
+                    $session->setLastRealOrderId($incrementId);
+                    $session->setLastSuccessQuoteId($order->getQuoteId());
+                    $session->setLastQuoteId($order->getQuoteId());
+                    $session->setLastOrderId($order->getId());
+                }
+
                 $session->unsAdyenRealOrderId();
                 $session->setQuoteId($session->getAdyenQuoteId(true));
                 $session->getQuote()->setIsActive(false)->save();
+                Mage::log($session->getData(),null,'success-d.log');
                 $this->_redirect('checkout/onepage/success', array('utm_nooverride' => '1'));
             } else {
                 $this->cancel();

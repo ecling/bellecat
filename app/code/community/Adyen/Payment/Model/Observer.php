@@ -39,6 +39,46 @@ class Adyen_Payment_Model_Observer
             $store = Mage::app()->getStore();
         }
 
+        if(!Mage::app()->getStore()->isAdmin()){
+
+            if ($observer->getControllerAction()->getFullActionName()=='onestepcheckout_index_index') {
+                $lang_arr = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                if (count($lang_arr)>0) {
+                    $lang = $lang_arr['0'];
+                    $lang =  strtolower($lang);
+
+
+                    if(!Mage::getSingleton('customer/session')->getDefault()) {
+                        $adapter = Mage::getSingleton('core/resource')->getConnection('core_write');
+                        $lc_result = $adapter->query("select * from language_country where language_code='" . $lang . "'");
+                        $lc = $lc_result->fetch();
+
+                        if(isset($lc['currency_code'])&&!empty($lc['currency_code'])){
+                            Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
+                            Mage::getSingleton('customer/session')->setDefaultCurrency($lc['currency_code']);
+                        }
+
+                        if(isset($lc['country_code'])&&!empty($lc['country_code'])){
+                            Mage::getSingleton('customer/session')->setDefaultCountry($lc['country_code']);
+                        }
+
+                        if(isset($lc['payment'])&&!empty($lc['payment'])){
+                            Mage::getSingleton('customer/session')->setDefaultPayment($lc['payment']);
+                        }
+
+                        Mage::getSingleton('customer/session')->setDefault(true);
+                    }else{
+                        Mage::getSingleton('customer/session')->setDefaultCurrency(null);
+                    }
+
+                    if($currency = $observer->getControllerAction()->getRequest()->getParam('currency')){
+                        Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
+                        Mage::getSingleton('customer/session')->setDefaultCurrency($currency);
+                    }
+                }
+            }
+        }
+
         if (Mage::getStoreConfigFlag('payment/adyen_hpp/active', $store)) {
             // by default disable adyen_ideal only if IDeal is in directoryLookup result show this payment method
             $store->setConfig('payment/adyen_ideal/active', 0);
@@ -209,6 +249,9 @@ class Adyen_Payment_Model_Observer
      */
     protected function _getCurrentCurrencyCode()
     {
+        if(Mage::getSingleton('customer/session')->getDefaultCurrency()){
+            return Mage::getSingleton('customer/session')->getDefaultCurrency();
+        }
         return $this->_getQuote()->getQuoteCurrencyCode() ?: Mage::app()->getBaseCurrencyCode();
     }
 
@@ -225,6 +268,17 @@ class Adyen_Payment_Model_Observer
             return $countryCode;
         }
 
+        //ling 登录状态只传地址ID
+        if(Mage::helper('customer')->isLoggedIn()){
+            $customerAddressId = Mage::app()->getRequest()->getPost('billing_address_id', false);
+            if($customerAddressId){
+                $billingAddress = Mage::getModel('customer/address')->load($customerAddressId);
+                if(is_object($billingAddress)){
+                    return $billingAddress->getCountryId();
+                }
+            }
+        }
+
         $billingParams = Mage::app()->getRequest()->getParam('billing');
         if (isset($billingParams['country_id'])) {
             return $billingParams['country_id'];
@@ -232,6 +286,10 @@ class Adyen_Payment_Model_Observer
 
         if ($country = $this->_getQuote()->getBillingAddress()->getCountry()) {
             return $country;
+        }
+
+        if(Mage::getSingleton('customer/session')->getDefaultCountry()){
+            return Mage::getSingleton('customer/session')->getDefaultCountry();
         }
 
         if (Mage::getStoreConfig('payment/account/merchant_country')) {
