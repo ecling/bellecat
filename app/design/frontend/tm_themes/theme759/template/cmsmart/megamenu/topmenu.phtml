@@ -46,6 +46,8 @@
             </li>
         <?php endif; ?>
 
+        <li class="level parent"><a href="<?php echo $this->getUrl('new-arrivals'); ?>"><span><?php echo $this->__('NEW'); ?></span></a></li>
+
 		<?php echo $_menu;?>
         <?php if ($tmpHtml = $this->getChildHtml('block_header_nav_dropdown')): ?>
         	<li class="nav-custom-link level0 level-top parent<?php if ($theme->getCfg('mainmenu/custom_block_floating')) echo ' f-right'; ?>">
