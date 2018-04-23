@@ -53,9 +53,12 @@ class Adyen_Payment_Model_Observer
                         $lc_result = $adapter->query("select * from language_country where language_code='" . $lang . "'");
                         $lc = $lc_result->fetch();
 
+                        $log_arr = array('id'=>$this->_getQuote()->getId(),'lan'=>$lang,'data'=>$lc);
+                        Mage::log($log_arr,null,'lang.log');
+
                         if(isset($lc['currency_code'])&&!empty($lc['currency_code'])){
-                            Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
-                            Mage::getSingleton('customer/session')->setDefaultCurrency($lc['currency_code']);
+                            //Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
+                            //Mage::getSingleton('customer/session')->setDefaultCurrency($lc['currency_code']);
                         }
 
                         if(isset($lc['country_code'])&&!empty($lc['country_code'])){
@@ -72,8 +75,8 @@ class Adyen_Payment_Model_Observer
                     }
 
                     if($currency = $observer->getControllerAction()->getRequest()->getParam('currency')){
-                        Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
-                        Mage::getSingleton('customer/session')->setDefaultCurrency($currency);
+                        //Mage::app()->getStore()->setCurrentCurrencyCode($currency);
+                        //Mage::getSingleton('customer/session')->setDefaultCurrency($currency);
                     }
                 }
             }

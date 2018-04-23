@@ -106,7 +106,7 @@ class CapacityWebSolutions_Newproducts_Block_Newproducts extends Mage_Catalog_Bl
 				$merged_ids = array_unique(array_merge($collection1->getAllIds(), $collection2->getAllIds()));
 			
 				$collection = Mage::getResourceModel('catalog/product_collection')
-					->addFieldToFilter('entity_id', array('in' => $merged_ids))
+					//->addFieldToFilter('entity_id', array('in' => $merged_ids))
 					->addAttributeToSelect('*');
 				break;
             default:
@@ -147,7 +147,7 @@ class CapacityWebSolutions_Newproducts_Block_Newproducts extends Mage_Catalog_Bl
 		}else{
 			$collection->addAttributeToSort($this->getSortBy(), $this->getSortOrder());
 		}
-		
+
 		return $collection;
     }
 
@@ -291,9 +291,9 @@ class CapacityWebSolutions_Newproducts_Block_Newproducts extends Mage_Catalog_Bl
                     ->setShowAmounts(true)
                     ->setShowPerPage(false)
                     ->setPageVarName(self::PAGE_VAR_NAME)
-                    ->setLimit(24)
+                    //->setLimit(24)
                     //->setLimit($this->getProductsPerPage())
-                    ->setTotalLimit(100)
+                    //->setTotalLimit(100)
                     ->setCollection($this->getProductCollection());
             }
             if ($this->_pager instanceof Mage_Core_Block_Abstract) {
