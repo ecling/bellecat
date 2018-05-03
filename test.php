@@ -8,22 +8,32 @@ var_dump($orderAmount);
 /*
 echo md5('linglovehuang');
 exit();
+*/
 
 include 'app/Mage.php';
 Mage::app();
 //Mage::log('test',null,'test.log');
 
-echo date('Y-m-d H:i:s',time());
+//echo date('Y-m-d H:i:s',time());
 
-if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-	$ip = $_SERVER['HTTP_CLIENT_IP'];
-} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-	$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+} elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} elseif(isset($_SERVER['HTTP_X_FORWARDED'])) {
+    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+}elseif(isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+} elseif(isset($_SERVER['HTTP_FORWARDED'])) {
+    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+} elseif(isset($_SERVER['REMOTE_ADDR'])) {
+    $ipaddress = $_SERVER['REMOTE_ADDR'];
 } else {
-	$ip = $_SERVER['REMOTE_ADDR'];
+    $ipaddress = '';
 }
-var_dump($ip);
+var_dump($ipaddress);
 
+/*
 //echo Mage::getSingleton('core/date')->gmtTimestamp('2017-11-08 02:06:42');
 
 //echo 'php time: '.date('Y-m-d H:m:s').'<br/>';
@@ -88,4 +98,4 @@ Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($prod
 Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($products);
 
 print_r((string)$products->getSelect());
-
+*/

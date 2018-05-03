@@ -6,6 +6,9 @@
  * Time: 9:22
  */
 
+include('app/Mage.php');
+Mage::app();
+
 if (Mage::helper('varnishcache')->isEnabled()) {
     // get domains for purging
     $domains = Mage::helper('varnishcache/cache')

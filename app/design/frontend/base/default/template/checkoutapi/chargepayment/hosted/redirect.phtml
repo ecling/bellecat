@@ -17,12 +17,13 @@
 </script>
 
 <?php if($params['contextId']): ?>
-<?php 
+<?php
     $content_ids = array();
     foreach($_order->getAllVisibleItems() as $_item){
         $content_ids[] = '"'.$_item->getProductId().'"';
     }
 ?>
+
 <script>
   fbq('track', 'Purchase', {
     source: 'magento',
@@ -30,7 +31,7 @@
     pluginVersion: "2.1.14",
     content_type: "product", 
     content_ids: [<?php echo implode(',',$content_ids); ?>],
-    value: <?php echo $_order->getGrandTotal() ?>,
+    value: <?php echo $_order->getBaseGrandTotal() ?>,
     currency: "<?php echo Mage::app()->getStore()->getCurrentCurrencyCode() ?>"
   });
 </script>
