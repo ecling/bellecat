@@ -194,10 +194,12 @@ class Facebook_AdsToolbox_Model_Observer {
       Mage::app()->getStore()->setCurrentCurrencyCode($curency);
     }
 
+    /*
     if ($observer->getAction()->getFullActionName()=='onestepcheckout_index_index') {
         $lang_arr = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
         if (count($lang_arr)>0) {
             $lang = $lang_arr['0'];
+            $lang =  strtolower($lang);
 
             $adapter = Mage::getSingleton('core/resource')->getConnection('core_write');
             $lc_result = $adapter->query("select * from language_country where language_code='".$lang."'");
@@ -214,6 +216,7 @@ class Facebook_AdsToolbox_Model_Observer {
             }
         }
     }
+    */
   }
 
   public static function checkFeedWriteError() {

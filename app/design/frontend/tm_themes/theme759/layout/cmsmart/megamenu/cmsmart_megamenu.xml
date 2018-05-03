@@ -3,7 +3,7 @@
 	<default>
       <reference name="header">
         <reference name="top.menu">
-	  		  <reference name="catalog.topnav">
+          <reference name="catalog.topnav">
                 <action method="setTemplate" ifconfig="megamenu/mainmenu/enabled"><template>page/html/topmenu_2.phtml</template></action>
           </reference>
           
