@@ -14,9 +14,8 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
     public function indexAction()
     {
         $this->_title($this->__('Manage Recommend'));
-
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('recommend/adminhtml_price'))
+            ->_addContent($this->getLayout()->createBlock('recommend/adminhtml_recommend'))
             ->renderLayout();
     }
 
@@ -40,7 +39,7 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
         $this->_title($this->__('Add Recommend'));
 
         $id = $this->getRequest()->getParam('id');
-        $model = Mage::getModel('recommend/price');
+        $model = Mage::getModel('recommend/recommend');
 
         if ($id) {
             $model->load($id);
@@ -62,16 +61,15 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
         Mage::register('shipping_price', $model);
 
         if (isset($id)) {
-            $breadcrumb = $this->__('Edit Rule');
+            $breadcrumb = $this->__('Edit');
         } else {
-            $breadcrumb = $this->__('New Rule');
+            $breadcrumb = $this->__('New');
         }
         $this->_initAction()
             ->_addBreadcrumb($breadcrumb, $breadcrumb);
 
         $this->_addContent(
-            $this->getLayout()->createBlock('bcshipping/adminhtml_price_edit')
-                ->setData('action', $this->getUrl('admin/shipping_type/save'))
+            $this->getLayout()->createBlock('recommend/adminhtml_recommend_edit')
         );
 
         $this->renderLayout();
@@ -79,29 +77,69 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
 
     public function saveAction(){
         if ($postData = $this->getRequest()->getPost()) {
-            $data['country'] = $postData['country'];
-            $data['condition_num'] = $postData['condition_num'];
-            $data['shipping_name'] = $postData['shipping_name'];
-            $data['price'] = $postData['price'];
-            $data['additional_price'] = $postData['additional_price'];
-            $model  = Mage::getModel('bcshipping/price')
-                ->setData($data);
+            $adapter = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-            try {
-                $model->save();
+            $name = $postData['name'];
+            $url = $postData['url'];
+            $skus = $postData['skus'];
+            $skus = preg_replace("[\s+]",',',trim($postData['skus']));
 
-                Mage::dispatchEvent('bcshipping_rule_save_after',array());
+            $url_parse = parse_url($url);
+            if(isset($url_parse['path'])) {
+                $url_path = trim($url_parse['path'], '/');
+                $url_result = $adapter->query("SELECT * FROM `core_url_rewrite` WHERE request_path='".$url_path."' limit 1");
+                $url = $url_result->fetch();
+                if($url&&isset($url['category_id'])){
+                    $category_id = $url['category_id'];
 
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('The Rule has been saved.'));
-                Mage::getSingleton('adminhtml/session')->setTagData(false);
+                    $skus_arr = explode(',',$skus);
+                    foreach ($skus_arr as $sku){
+                        $product_result = $adapter->query("select entity_id from catalog_product_entity where sku='".$sku."'");
+                        $product = $product_result->fetch();
+                        $include_sku = [];
+                        $exclude_sku = [];
+                        if($product){
+                            $include_sku[$product['entity_id']] = $sku;
+                        }else{
+                            $exclude_sku[] = $sku;
+                            Mage::getSingleton('adminhtml/session')->addError($sku.' does not exist');
+                        }
+                    }
 
-                return $this->_redirect('*/*/index/');
+                    if(count($include_sku)>0) {
+                        $data = array(
+                            'name' => $name,
+                            'url' => trim($postData['url']),
+                            'category_id' => $category_id,
+                            'store_id' => 0,
+                            'skus_str' => implode(',',$include_sku)
+                        );
 
-            } catch (Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                Mage::getSingleton('adminhtml/session')->setRuleData($data);
+                        $model = Mage::getModel('recommend/recommend')
+                            ->setData($data);
 
-                return $this->_redirect('*/*/edit', array('tag_id' => $model->getId(), 'store' => $model->getStoreId()));
+                        try {
+                            $model->save();
+                            $recommend_id = $model->getId();
+                            $i = 0;
+                            foreach ($include_sku as $product_id=>$sku){
+                                $row = [];
+                                $i++;
+                                $row = array(
+                                    'recommend_id'=>$recommend_id,
+                                    'product_id'=>$product_id,
+                                    'position'=>$i
+                                );
+                                $adapter->insert('catalog_product_recommend_relation',$row);
+                            }
+                        } catch (Exception $e) {
+                            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                            Mage::getSingleton('adminhtml/session')->setRuleData($data);
+
+                            return $this->_redirect('*/*/edit', array('tag_id' => $model->getId(), 'store' => $model->getStoreId()));
+                        }
+                    }
+                }
             }
         }
         return $this->_redirect('*/*/index', array('_current' => true));

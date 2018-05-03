@@ -35,7 +35,7 @@
         <models>
             <recommend>
                 <class>Martin_Recommend_Model</class>
-                <resourceModel>bcshipping_resource</resourceModel>
+                <resourceModel>recommend_resource</resourceModel>
             </recommend>
             <recommend_resource>
                 <class>Martin_Recommend_Model_Resource</class>
