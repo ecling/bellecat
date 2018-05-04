@@ -231,6 +231,8 @@ class CheckoutApi_ChargePayment_ApiController extends Mage_Core_Controller_Front
 
         $orderIncrementId   = (string)$this->getRequest()->getParam('cko-context-id');
 
+        Mage::log($orderIncrementId,null,'success-e.log');
+
         if(!$orderIncrementId){
             $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         }

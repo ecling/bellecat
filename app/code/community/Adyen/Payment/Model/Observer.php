@@ -57,8 +57,8 @@ class Adyen_Payment_Model_Observer
                         Mage::log($log_arr,null,'lang.log');
 
                         if(isset($lc['currency_code'])&&!empty($lc['currency_code'])){
-                            Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
-                            Mage::getSingleton('customer/session')->setDefaultCurrency($lc['currency_code']);
+                            //Mage::app()->getStore()->setCurrentCurrencyCode($lc['currency_code']);
+                            //Mage::getSingleton('customer/session')->setDefaultCurrency($lc['currency_code']);
                         }
 
                         if(isset($lc['country_code'])&&!empty($lc['country_code'])){
