@@ -86,7 +86,8 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
 
             $url_parse = parse_url($url);
             if(isset($url_parse['path'])) {
-                $url_path = trim($url_parse['path'], '/');
+                $url_path = substr($url_parse['path'],4);
+                $url_path = trim($url_path, '/');
                 $url_result = $adapter->query("SELECT * FROM `core_url_rewrite` WHERE request_path='".$url_path."' limit 1");
                 $url = $url_result->fetch();
                 if($url&&isset($url['category_id'])){
