@@ -229,6 +229,12 @@ class Mage_Catalog_Block_Product_List_Toolbar extends Mage_Core_Block_Template
         if ($limit) {
             $this->_collection->setPageSize($limit);
         }
+
+        $recommend_id = $this->getRequest()->getParam('re',null);
+        if($recommend_id){
+            $this->_collection->getSelect()->order('recommend DESC');
+        }
+
         if ($this->getCurrentOrder()) {
             if($this->getCurrentOrder()=='hot'){
                 $dir = $this->getCurrentOrder().' '.$this->getCurrentDirection();

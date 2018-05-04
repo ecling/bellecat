@@ -105,6 +105,16 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
                 }
             }
 
+            $recommend_id = $this->getRequest()->getParam('re',null);
+            if($recommend_id){
+                $this->_productCollection->getSelect()
+                    ->joinLeft(
+                        array('re'=>'catalog_product_recommend_relation'),
+                        "re.product_id=e.entity_id and re.recommend_id=".$recommend_id,
+                        "re.position as recommend"
+                    );
+            }
+
             if ($origCategory) {
                 $layer->setCurrentCategory($origCategory);
             }

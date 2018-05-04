@@ -93,13 +93,15 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
                     $category_id = $url['category_id'];
 
                     $skus_arr = explode(',',$skus);
+                    $include_sku = [];
+                    $exclude_sku = [];
+
                     foreach ($skus_arr as $sku){
                         $product_result = $adapter->query("select entity_id from catalog_product_entity where sku='".$sku."'");
                         $product = $product_result->fetch();
-                        $include_sku = [];
-                        $exclude_sku = [];
                         if($product){
-                            $include_sku[$product['entity_id']] = $sku;
+                            $product_id = $product['entity_id'];
+                            $include_sku[$product_id] = $sku;
                         }else{
                             $exclude_sku[] = $sku;
                             Mage::getSingleton('adminhtml/session')->addError($sku.' does not exist');
@@ -121,15 +123,15 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
                         try {
                             $model->save();
                             $recommend_id = $model->getId();
-                            $i = 0;
+                            $i = count($include_sku)+1;
                             foreach ($include_sku as $product_id=>$sku){
                                 $row = [];
-                                $i++;
                                 $row = array(
                                     'recommend_id'=>$recommend_id,
                                     'product_id'=>$product_id,
                                     'position'=>$i
                                 );
+                                $i++;
                                 $adapter->insert('catalog_product_recommend_relation',$row);
                             }
                         } catch (Exception $e) {
