@@ -161,4 +161,8 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
 
         return $this->_redirect('*/*/index', array('_current' => true));
     }
+
+    protected function _isAllowed(){
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/recommend');
+    }
 }
