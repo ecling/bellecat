@@ -131,7 +131,7 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
                                     'product_id'=>$product_id,
                                     'position'=>$i
                                 );
-                                $i++;
+                                $i--;
                                 $adapter->insert('catalog_product_recommend_relation',$row);
                             }
                         } catch (Exception $e) {
