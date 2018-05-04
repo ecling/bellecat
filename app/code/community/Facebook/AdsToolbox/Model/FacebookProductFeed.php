@@ -287,6 +287,7 @@ class FacebookProductFeed {
     }else{
         $items['custom_label_1'] = 'Not';
     }
+    $items['custom_label_2'] = $product->getSku();
     return $items;
   }
 
