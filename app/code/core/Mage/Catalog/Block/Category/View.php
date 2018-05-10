@@ -46,9 +46,10 @@ class Mage_Catalog_Block_Category_View extends Mage_Core_Block_Template
 		$order = $request->getParam('order');
 		$mode = $request->getParam('mode');
 		$limit = $request->getParam('limit');
+		$re = $request->getParam('re');
 		
 		$currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
-		$str = $p.'_'.$dir.'_'.$order.'_'.$mode.'_'.$limit.'_'.$currency_code;
+		$str = $p.'_'.$dir.'_'.$order.'_'.$mode.'_'.$limit.'_'.$currency_code.'_'.$re;
         $this->addData(array(
             'cache_lifetime'    => 360000000,
             'cache_tags'        => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),

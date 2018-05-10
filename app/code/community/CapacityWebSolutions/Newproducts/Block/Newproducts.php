@@ -291,7 +291,7 @@ class CapacityWebSolutions_Newproducts_Block_Newproducts extends Mage_Catalog_Bl
                     ->setShowAmounts(true)
                     ->setShowPerPage(false)
                     ->setPageVarName(self::PAGE_VAR_NAME)
-                    //->setLimit(24)
+                    ->setLimit(24)
                     //->setLimit($this->getProductsPerPage())
                     //->setTotalLimit(100)
                     ->setCollection($this->getProductCollection());
