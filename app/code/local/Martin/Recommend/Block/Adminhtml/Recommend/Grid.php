@@ -61,6 +61,12 @@ class Martin_Recommend_Block_Adminhtml_Recommend_Grid extends Mage_Adminhtml_Blo
             'index'     => 'skus_str'
         ));
 
+        $this->addColumn('action', array(
+            'header'    => Mage::helper('adminhtml')->__('View'),
+            'type' => 'recommend_url',
+            'index'     => 'action'
+        ));
+
         return parent::_prepareColumns();
     }
     public function getGridUrl()

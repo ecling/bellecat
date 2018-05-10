@@ -121,4 +121,8 @@ class Martin_Bcshipping_Adminhtml_Bcshipping_IndexController extends
 
         return $this->_redirect('*/*/index', array('_current' => true));
     }
+
+    protected function _isAllowed(){
+        return Mage::getSingleton('admin/session')->isAllowed('sales/bcshipping');
+    }
 }

@@ -45,6 +45,7 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
         $collection->getSelect()
             ->columns("sum(qty_ordered) as num")
             ->joinLeft('sales_flat_order AS order','main_table.order_id=order.entity_id','')
+            ->joinLeft('catalog_product_entity_varchar as img','main_table.product_id=img.entity_id and img.store_id=0 and img.attribute_id=85',array('image'=>'img.value'))
             ->where('order.created_at>=?',array('from'=>$from))
             ->where('order.created_at<?',array('to'=>$to))
             ->where("order.status='complete' OR order.status='processing'")
@@ -61,6 +62,12 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
         $this->addColumn('sku', array(
             'header'    => Mage::helper('customer')->__('sku'),
             'index'     => 'sku'
+        ));
+
+        $this->addColumn('image', array(
+            'header'    => Mage::helper('customer')->__('Image'),
+            'index'     => 'image',
+            'type'      => 'image'
         ));
         
         $this->addColumn('name', array(
