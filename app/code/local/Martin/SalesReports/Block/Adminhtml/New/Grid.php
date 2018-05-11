@@ -7,8 +7,22 @@
  */
 
 class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_Widget_Grid{
+    protected $_defaultFilter   = array();
+    protected $_from;
+    protected $_to;
     public function __construct()
     {
+        $from = date('m/d/Y',time()-3600*24*7);
+        $to = date('m/d/Y',time());
+
+        $this->_from = Mage::helper('salesreports')->convertDate($from,'en_US')->toString('MM/dd/Y');
+        $this->_to = Mage::helper('salesreports')->convertDate($to,'en_US')->toString('MM/dd/Y');
+
+        $this->_defaultFilter = array('created_at'=>array(
+            'from'=>$this->_from,
+            'to'=>$this->_to,
+            'locale'=>'en_US'
+        ));
         parent::__construct();
         $this->setId('customerGrid');
         $this->setUseAjax(true);
@@ -74,8 +88,8 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
             $data = $this->helper('adminhtml')->prepareFilterString($filter);
             if(!isset($data['created_at'])||!isset($data['created_at']['from'])){
                 $data['created_at'] = array(
-                    'from'=>date('m/d/Y',time()-3600*24*7),
-                    'to'=>date('m/d/Y',time()),
+                    'from'=>$this->_from,
+                    'to'=>$this->_to,
                     'locale'=>'en_US'
                 );
             }
@@ -128,7 +142,8 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
         $this->addColumn('created_at', array(
             'header'    => Mage::helper('customer')->__('Created At'),
             'index'     => 'created_at',
-            'type'      => 'date'
+            'type'      => 'datetime',
+            'timezone' => true
         ));
 
         return parent::_prepareColumns();
