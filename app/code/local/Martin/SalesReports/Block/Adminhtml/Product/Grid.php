@@ -18,28 +18,30 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('qty_ordered')
-            ->addAttributeToSelect('created_at'); 
-            
+            ->addAttributeToSelect('created_at');
+
         if($store = $this->getRequest()->getParam('store')){
             $collection->addAttributeToFilter('store_id',$store);     
         }
         
         if($from = $this->helper('salesreports')->getParam('from')){
-            $from = DateTime::createFromFormat('m/d/Y',$from);
-            $from = $from->format('Y-m-d');
+            //$from = DateTime::createFromFormat('m/d/Y',$from);
+            //$from = $from->format('Y-m-d');
+            $from = $this->helper('salesreports')->convertDate($from,'en_US')->toString('Y-MM-dd HH:mm:ss');
         }else{
             $from = date('Y-m-d',time()-3600*24*7);
         }
         
         if($to = $this->helper('salesreports')->getParam('to')){
-            $to = strtotime($to)+3600*24;
-            $to = date('Y-m-d',$to);
+            //$to = strtotime($to)+3600*24;
+            //$to = date('Y-m-d',$to);
             //$to = DateTime::createFromFormat('m/d/Y',$to);
             //$to = $to->format('Y-m-d');
+            $to = $this->helper('salesreports')->convertDate($to,'en_US')->addDay(1)->subSecond(1)->toString('Y-MM-dd HH:mm:ss');
         }else{
             $to  = date('Y-m-d',time());
         }
-        
+
         //$collection->addAttributeToFilter('created_at',array('from'=>$from,'to'=>$to));
             
         $collection->getSelect()
@@ -51,7 +53,7 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
             ->where("order.status='complete' OR order.status='processing'")
             ->order('num desc')
             ->group('product_id');
-        
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -90,8 +92,10 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
                 'actions'   => array(
                     array(
                         'caption'   => Mage::helper('customer')->__('View'),
-                        'url'       => array('base'=> '*/*/view'),
-                        'field'     => 'id'
+                        'url'       => array('base'=> '*/*/popup'),
+                        'field'     => 'id',
+                        'popup'     =>true
+
                     )
                 ),
                 'filter'    => false,

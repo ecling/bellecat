@@ -20,6 +20,13 @@ class Martin_SalesReports_Adminhtml_Salesreports_ProductController extends Mage_
         $this->loadLayout();
         $this->renderLayout();
     }
+
+    public function popupAction(){
+        $this->loadLayout();
+        $block = $this->getLayout()->createBlock('salesreports/adminhtml_product_num')->setTemplate('salesreports/product/sku/num.phtml');
+        echo $block->toHtml();
+    }
+
     protected function _isAllowed(){
         return Mage::getSingleton('admin/session')->isAllowed('admin/salesreports/product');
     }

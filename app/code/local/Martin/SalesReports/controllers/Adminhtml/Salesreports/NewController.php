@@ -3,18 +3,31 @@ class Martin_SalesReports_Adminhtml_Salesreports_NewController extends Mage_Admi
     public function preDispatch(){
         parent::preDispatch();
     }
+
+    protected function _initAction()
+    {
+        $this->loadLayout()
+            ->_setActiveMenu('catalog')
+            ->_addBreadcrumb($this->__('salesreports'), $this->__('New Product Sales Report'))
+        ;
+        return $this;
+    }
+
     public function indexAction(){
-        $this->_forward('grid');
+        $this->loadLayout();
+        if ($this->getRequest()->getQuery('ajax')) {
+            $this->_forward('grid');
+        }
+        $this->_initAction()
+            ->_addContent($this->getLayout()->createBlock('salesreports/adminhtml_new'))
+            ->renderLayout();
     }
     public function gridAction(){
         $this->loadLayout();
-        if ($this->getRequest()->getQuery('ajax')) {
-            $block  = $this->getLayout()->createBlock('salesreports/adminhtml_product_grid', 'grid');
-            $this->getResponse()->setBody($block->toHtml());
-            return $this;
-        }
-        
-        $this->renderLayout();
+
+        $this->getResponse()->setBody(
+            $this->getLayout()->createBlock('salesreports/adminhtml_new_grid')->toHtml()
+        );
     }
     public function viewAction(){
         $this->loadLayout();
