@@ -7,7 +7,7 @@ class Martin_SalesReports_Adminhtml_Salesreports_NewController extends Mage_Admi
     protected function _initAction()
     {
         $this->loadLayout()
-            ->_setActiveMenu('catalog')
+            ->_setActiveMenu('salesreports')
             ->_addBreadcrumb($this->__('salesreports'), $this->__('New Product Sales Report'))
         ;
         return $this;
@@ -34,6 +34,6 @@ class Martin_SalesReports_Adminhtml_Salesreports_NewController extends Mage_Admi
         $this->renderLayout();
     }
     protected function _isAllowed(){
-        return Mage::getSingleton('admin/session')->isAllowed('admin/salesreports/product');
+        return Mage::getSingleton('admin/session')->isAllowed('admin/salesreports/new');
     }
 }

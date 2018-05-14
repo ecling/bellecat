@@ -52,6 +52,10 @@
                                 <title>Product Reports</title>
                                 <sort_order>1</sort_order>
                             </product>
+                            <new>
+                                <title>New Product Reports</title>
+                                <sort_order>2</sort_order>
+                            </new>
                         </children>
                     </salesreports>
                 </children>
