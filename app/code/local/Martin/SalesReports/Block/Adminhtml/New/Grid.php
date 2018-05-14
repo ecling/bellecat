@@ -67,6 +67,7 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
             ->columns("SUM(IF(order.status='complete' OR order.status='processing',oi.qty_ordered,0)) as num")
             ->joinLeft('sales_flat_order_item as oi','oi.product_id=e.entity_id','')
             ->joinLeft('sales_flat_order AS order',"oi.order_id=order.entity_id and (order.status='complete' or order.status='processing')",'')
+            ->joinLeft("cataloginventory_stock_status_idx as stock","stock.product_id=oi.product_id and stock.website_id=1",'ROUND(9999-stock.qty) as stock_num')
             //->where('order.created_at>=?',array('from'=>$from))
             //->where('order.created_at<?',array('to'=>$to))
             //->where("order.status='complete' OR order.status='processing'")
@@ -136,6 +137,12 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
         $this->addColumn('qty_ordered', array(
             'header'    => Mage::helper('customer')->__('Ordered Qty'),
             'index'     => 'num',
+            'type'      => 'number'
+        ));
+
+        $this->addColumn('stock', array(
+            'header'    => Mage::helper('customer')->__('Stock'),
+            'index'     => 'stock_num',
             'type'      => 'number'
         ));
 
