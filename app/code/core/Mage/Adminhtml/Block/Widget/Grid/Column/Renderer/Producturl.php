@@ -50,7 +50,7 @@ class Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Producturl
         $adapter = Mage::getSingleton('core/resource')->getConnection('core_write');
         $ur_result = $adapter->query("SELECT * FROM `core_url_rewrite` WHERE product_id='".$product_id."' AND category_id IS NULL LIMIT 1");
         $url = $ur_result->fetch();
-        $url = 'https://www.bellecat.com/en/'.$url['request_path'];
+        $url = 'https://www.bellecat.com/en/'.(isset($url['request_path'])?$url['request_path']:'');
         //$url = 'https://www.bellecat.com/en/catalog/product/view/id/'.$row->getData($field);
 
         return '<a target="_blank" href="'.$url.'">'.$this->getColumn()->getHeader().'</a>';
