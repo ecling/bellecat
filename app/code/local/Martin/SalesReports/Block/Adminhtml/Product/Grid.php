@@ -29,7 +29,8 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
             //$from = $from->format('Y-m-d');
             $from = $this->helper('salesreports')->convertDate($from,'en_US')->toString('Y-MM-dd HH:mm:ss');
         }else{
-            $from = date('Y-m-d',time()-3600*24*7);
+            $from = Mage::getModel('core/date')->date('m/d/Y',time());
+            $from = $this->helper('salesreports')->convertDate($from,'en_US')->subDay(7)->toString('Y-MM-dd HH:mm:ss');
         }
         
         if($to = $this->helper('salesreports')->getParam('to')){
@@ -91,7 +92,7 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
                 'getter'    => 'getProductId',
                 'actions'   => array(
                     array(
-                        'caption'   => Mage::helper('customer')->__('View'),
+                        'caption'   => Mage::helper('customer')->__('View Report'),
                         'url'       => array('base'=> '*/*/popup'),
                         'field'     => 'id',
                         'popup'     =>true
@@ -102,6 +103,13 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
                 'sortable'  => false,
                 'index'     => 'stores',
                 'is_system' => true,
+        ));
+
+        $this->addColumn('url', array(
+            'header'    => Mage::helper('customer')->__('View'),
+            'type'      => 'product_url',
+            'index'     => 'url',
+            'field'       =>  'product_id'
         ));
 
 

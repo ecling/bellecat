@@ -212,7 +212,6 @@ class Mage_Adminhtml_Block_Widget_Grid_Column extends Mage_Adminhtml_Block_Widge
         if (is_array($renderers) && isset($renderers[$type])) {
             return $renderers[$type];
         }
-
         switch ($type) {
             case 'date':
                 $rendererClass = 'adminhtml/widget_grid_column_renderer_date';
@@ -273,6 +272,12 @@ class Mage_Adminhtml_Block_Widget_Grid_Column extends Mage_Adminhtml_Block_Widge
                 break;
             case 'image':
                 $rendererClass = 'adminhtml/widget_grid_column_renderer_image';
+                break;
+            case 'days':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_days';
+                break;
+            case 'product_url':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_producturl';
                 break;
             default:
                 $rendererClass = 'adminhtml/widget_grid_column_renderer_text';

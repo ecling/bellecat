@@ -146,6 +146,19 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
             'timezone' => true
         ));
 
+        $this->addColumn('days', array(
+            'header'    => Mage::helper('customer')->__('Days'),
+            'type'      => 'days',
+            'index'     => 'days',
+        ));
+
+        $this->addColumn('url', array(
+            'header'    => Mage::helper('customer')->__('View'),
+            'type'      => 'product_url',
+            'index'     => 'url',
+            'field'       =>  'entity_id'
+        ));
+
         return parent::_prepareColumns();
     }
 }

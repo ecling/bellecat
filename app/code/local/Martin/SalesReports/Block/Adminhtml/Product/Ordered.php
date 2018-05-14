@@ -6,7 +6,8 @@ class Martin_SalesReports_Block_Adminhtml_Product_Ordered extends Mage_Adminhtml
             //$from = $from->format('Y-m-d');
             $from = $this->helper('salesreports')->convertDate($from,'en_US')->toString('Y-MM-dd HH:mm:ss');
         }else{
-            $from = date('Y-m-d',time()-3600*24*7);
+            $from = Mage::getModel('core/date')->date('m/d/Y',time());
+            $from = $this->helper('salesreports')->convertDate($from,'en_US')->subDay(7)->toString('Y-MM-dd HH:mm:ss');
         }
 
         if($to = $this->helper('salesreports')->getParam('to')){
