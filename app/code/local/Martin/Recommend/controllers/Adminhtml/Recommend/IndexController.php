@@ -24,7 +24,7 @@ class Martin_Recommend_Adminhtml_Recommend_IndexController extends
         $this->loadLayout();
         $this->getResponse()
             ->setBody($this->getLayout()
-                ->createBlock('recommend/adminhtml_price_grid')
+                ->createBlock('recommend/adminhtml_recommend_grid')
                 ->toHtml()
             );
     }
