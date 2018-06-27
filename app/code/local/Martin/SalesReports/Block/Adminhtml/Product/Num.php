@@ -24,7 +24,7 @@ class Martin_SalesReports_Block_Adminhtml_Product_Num extends Mage_Adminhtml_Blo
         
         $collection->getSelect()
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns("DATE_FORMAT(main_table.created_at,'%y%m%d') AS date")
+            ->columns("DATE_FORMAT(convert_tz(main_table.created_at,'+00:00','+08:00'),'%y%m%d') AS date")
             ->columns("SUM(main_table.qty_ordered) AS subtotal")
             ->joinLeft('sales_flat_order as o','o.entity_id=main_table.order_id','')
             ->where("o.status='complete' OR o.status='processing'")
