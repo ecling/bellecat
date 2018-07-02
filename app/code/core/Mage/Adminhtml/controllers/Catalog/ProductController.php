@@ -800,21 +800,22 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
             $product = $this->_initProductSave();
 
             try {
-		$orig_name = trim($product->getTitle());
-		$orig_desc1 = trim($product->getDesc1());
-		$orig_desc2 = trim($product->getDesc2());
-		$product->setDescription($orig_desc1.$orig_desc2);
-	        $product->save();
+                //$orig_name = trim($product->getTitle());
+                $orig_name = trim($product->getName());
+                $orig_desc1 = trim($product->getDesc1());
+                $orig_desc2 = trim($product->getDesc2());
+                //$product->setDescription($orig_desc1.$orig_desc2);
+                $product->save();
 
 
-		$orig_name =  nl2br($orig_name);
+		        $orig_name =  nl2br($orig_name);
                 $row_orig_name =  explode('<br />', $orig_name);
                 $orig_name = '';  
                 foreach($row_orig_name as $orig_n) {
                     $orig_name .= '&q='.urlencode(trim($orig_n)); 
                 } 
-		$orig_description = trim($product->getDescription());
-		$orig_short_description = trim($product->getShortDescription());
+		        $orig_description = trim($product->getDescription());
+		        $orig_short_description = trim($product->getShortDescription());
                 if($storeId == null && $orig_name !='') {
                     $allStores = Mage::app()->getStores();
                     foreach ($allStores as $_eachStoreId => $val)
@@ -842,33 +843,75 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                             $orig_lan = 'en';
                         }    
                         if($orig_lan == 'en') {
-				//$product->setDescription($orig_desc1.$orig_desc2);
-				//$product->save();
+				            //$product->setDescription($orig_desc1.$orig_desc2);
+				            //$product->save();
                             continue;
-                        }    
+                        }
 
+                        //翻译标题
+                        $handle = curl_init('https://www.googleapis.com/language/translate/v2?key=AIzaSyAYNByJiGLfhiF3HujNKcHkm_KVazOCFkw'.$orig_name.'&source=en&target='.$orig_lan);
+                        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, '0');
+                        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, '0');
+                        $response = curl_exec($handle);
+                        $responseDecoded = json_decode($response, true);
+                        curl_close($handle);
 
-//name
-		        $handle = curl_init('https://www.googleapis.com/language/translate/v2?key=AIzaSyAYNByJiGLfhiF3HujNKcHkm_KVazOCFkw'.$orig_name.'&source=en&target='.$orig_lan);
-		        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-		        $response = curl_exec($handle);                 
-		        $responseDecoded = json_decode($response, true);
-		        curl_close($handle);
-
-			$name_tr = '';
-			foreach($responseDecoded['data']['translations'] as $name_tran) {
-				$name_tr .= $name_tran['translatedText'].' ';
-			}
-
+                        $name_tr = '';
+                        foreach($responseDecoded['data']['translations'] as $name_tran) {
+                            $name_tr .= $name_tran['translatedText'].' ';
+                        }
 
                         $product->setName(trim($name_tr));
-			$name_trans = $this->google_trans($orig_short_description, $orig_lan);
+			            $name_trans = $this->google_trans($orig_short_description, $orig_lan);
                         $product->setShortDescription($name_trans);
-			$name_trans1 = $this->google_trans($orig_desc1, $orig_lan);
-			$name_trans2 = $this->google_trans($orig_desc2, $orig_lan);
-                        $product->setDescription($name_trans1.$name_trans2);
+                        //$name_trans1 = $this->google_trans($orig_desc1, $orig_lan);
+			            //$name_trans2 = $this->google_trans($orig_desc2, $orig_lan);
+                        //$product->setDescription($name_trans1.$name_trans2);
 
-			$product->getResource()->save($product);
+                        //翻译描述
+                        $orig_description_row = preg_split("/(<[^>]+?>)/si",$orig_description, -1,PREG_SPLIT_NO_EMPTY| PREG_SPLIT_DELIM_CAPTURE);
+                        $des_tran_index = array();
+                        $des_query = '';
+                        $index = 0;
+                        for($i=0;$i<count($orig_description_row);$i++){
+
+                            if(preg_match("/(<[^>]+?>)/si",$orig_description_row[$i])||preg_match("/^[\s]*?[\s]$/si",$orig_description_row[$i])||(trim($orig_description_row[$i])=='&nbsp;')){
+
+                            }else{
+                                $des_query .= '&q='.urlencode($orig_description_row[$i]);
+                                $des_tran_index[$i] = $index;
+                                $index++;
+                                //$des_tran_text[] = $orig_description_row[$i];
+                                //$orig_description_row[$i] = $this->google_trans($orig_description_row[$i],$orig_lan);
+                            }
+                        }
+
+                        $handle = curl_init('https://www.googleapis.com/language/translate/v2?key=AIzaSyAYNByJiGLfhiF3HujNKcHkm_KVazOCFkw'.$des_query.'&source=en&target='.$orig_lan);
+                        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, '0');
+                        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, '0');
+                        $response = curl_exec($handle);
+                        $responseDecoded = json_decode($response, true);
+                        curl_close($handle);
+
+                        $new_description = '';
+                        foreach ($orig_description_row as $key=>$row){
+                            if(preg_match("/(<[^>]+?>)/si",$row)||preg_match("/^[\s]*?[\s]$/si",$row)||(trim($row)=='&nbsp;')){
+                                $new_description .= $row;
+                            }else{
+                                if(isset($des_tran_index[$key])){
+                                    $index = $des_tran_index[$key];
+                                    $new_description .= $responseDecoded['data']['translations'][$index]['translatedText'];
+                                }else{
+                                    $new_description .= $row;
+                                }
+                            }
+                        }
+
+                        $product->setDescription($new_description);
+
+                        $product->getResource()->save($product);
                     }
                 }
                 $productId = $product->getId();
@@ -877,7 +920,8 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                    $this->_copyAttributesBetweenStores($data['copy_to_stores'], $product);
                 }
 
-		if(($orig_desc1 && ! $name_trans1) || ($orig_desc2 && ! $name_trans2)) {
+		//if(($orig_desc1 && ! $name_trans1) || ($orig_desc2 && ! $name_trans2)) {
+         if(!$name_tr&&!$new_description){
 			$this->_getSession()->addError('Description too big, translate failed!');
 		} else {
 			$this->_getSession()->addSuccess($this->__('The product has been translated.'));
@@ -921,6 +965,8 @@ protected function google_trans($text, $target) {
 
     $handle = curl_init($url);
     curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, '0');
+    curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, '0');
     $response = curl_exec($handle);                 
     $responseDecoded = json_decode($response, true);
     curl_close($handle);
