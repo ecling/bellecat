@@ -66,10 +66,11 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
         $collection->getSelect()
             ->columns("SUM(IF(order.status='complete' OR order.status='processing',oi.qty_ordered,0)) as num")
             ->joinLeft('sales_flat_order_item as oi','oi.product_id=e.entity_id','')
-            ->joinLeft('sales_flat_order AS order',"oi.order_id=order.entity_id and (order.status='complete' or order.status='processing')",'')
+            //->joinLeft('sales_flat_order AS order',"oi.order_id=order.entity_id and (order.status='complete' or order.status='processing')",'')
+            ->joinLeft('sales_flat_order AS order',"oi.order_id=order.entity_id",'')
             ->joinLeft("cataloginventory_stock_status_idx as stock","stock.product_id=oi.product_id and stock.website_id=1",'ROUND(9999-stock.qty) as stock_num')
-            ->where('order.created_at>=?',array('from'=>$this->_from))
-            ->where('order.created_at<?',array('to'=>$this->_to))
+            //->where('order.created_at>=?',array('from'=>$this->_from))
+            //->where('order.created_at<?',array('to'=>$this->_to))
             //->where("order.status='complete' OR order.status='processing'")
             //->order('num desc')
             ->group('e.entity_id');
@@ -102,6 +103,19 @@ class Martin_SalesReports_Block_Adminhtml_New_Grid extends Mage_Adminhtml_Block_
         else if(0 !== sizeof($this->_defaultFilter)) {
             $this->_setFilterValues($this->_defaultFilter);
         }
+
+        if(is_null($data)){
+            $data = $this->_defaultFilter;
+        }
+        $from = $data['created_at']['from'];
+        $to = $data['created_at']['to'];
+
+        $from = $this->helper('salesreports')->convertDate($from,'en_US')->toString('Y-MM-dd HH:mm:ss');
+        $to = $this->helper('salesreports')->convertDate($to,'en_US')->addDay(1)->subSecond(1)->toString('Y-MM-dd HH:mm:ss');
+
+        $collection->getSelect()
+            ->where('order.created_at>=?',array('from'=>$from))
+            ->where('order.created_at<?',array('to'=>$to));
 
         if (isset($this->_columns[$columnId]) && $this->_columns[$columnId]->getIndex()) {
             $dir = (strtolower($dir)=='desc') ? 'desc' : 'asc';
