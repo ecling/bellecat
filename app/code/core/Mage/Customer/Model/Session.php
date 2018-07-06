@@ -222,7 +222,7 @@ class Mage_Customer_Model_Session extends Mage_Core_Model_Session_Abstract
     {
         $this->setCustomer($customer);
         $this->renewSession();
-        Mage::dispatchEvent('customer_login', array('customer'=>$customer));
+        //Mage::dispatchEvent('customer_login', array('customer'=>$customer));
         return $this;
     }
 

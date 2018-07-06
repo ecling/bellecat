@@ -52,7 +52,7 @@ class Youama_Ajaxlogin_Model_Ajaxregister
         $this->_userId = -1;
 
         // Terms and conditions has been accepted
-        if ($_POST['licence'] == 'ok') {
+        //if ($_POST['licence'] == 'ok') {
             $this->setEmail($_POST['email']);
 
             // If this email is already exist
@@ -61,7 +61,8 @@ class Youama_Ajaxlogin_Model_Ajaxregister
             // If this email is not exist yet.
             } else {
                 $this->setPassword($_POST['password'], $_POST['passwordsecond']);
-                $this->setName($_POST['firstname'], $_POST['lastname']);
+                //$this->setName($_POST['firstname'], $_POST['lastname']);
+                $this->setName('Dear', 'Customer');
                 $this->setNewsletter($_POST['newsletter']);
 
                 // If there are no errors
@@ -76,9 +77,9 @@ class Youama_Ajaxlogin_Model_Ajaxregister
                 }
             }
         // Terms and conditions has not been accepted
-        } else {
-            $this->_result = 'nolicence,';
-        }        
+        //} else {
+        //    $this->_result = 'nolicence,';
+        //}
     }
 
     public function isConfirmationRequired()

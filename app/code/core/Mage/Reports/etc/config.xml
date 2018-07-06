@@ -120,7 +120,7 @@
                     </reports>
                 </observers>
             </catalog_product_compare_remove_product>
-            <customer_login>
+            <!--<customer_login>
                 <observers>
                     <reports>
                         <class>reports/event_observer</class>
@@ -135,7 +135,7 @@
                         <method>customerLogout</method>
                     </reports>
                 </observers>
-            </customer_logout>
+            </customer_logout>-->
             <catalog_controller_product_view>
                 <observers>
                     <reports>

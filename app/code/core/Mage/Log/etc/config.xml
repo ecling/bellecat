@@ -123,7 +123,7 @@
                     </log>
                 </observers>
             </controller_action_postdispatch>
-            <customer_login>
+            <!--<customer_login>
                 <observers>
                     <log>
                         <class>log/visitor</class>
@@ -138,7 +138,7 @@
                         <method>bindCustomerLogout</method>
                     </log>
                 </observers>
-            </customer_logout>
+            </customer_logout>-->
             <sales_quote_save_after>
                 <observers>
                     <log>

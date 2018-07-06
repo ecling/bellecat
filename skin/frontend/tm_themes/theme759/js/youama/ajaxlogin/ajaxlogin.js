@@ -267,14 +267,18 @@
             // Register
             if (windowName == 'register') {
                 // There is no last name
+                /*
                 if (opts.lastname.length < 1) {
                     opts.errors = opts.errors + 'nolastname,'
                 }
+                */
 
                 // There is no first name
+                /*
                 if (opts.firstname.length < 1) {
                     opts.errors = opts.errors + 'nofirstname,'
                 }
+                */
 
                 // There is no email address
                 if (opts.email.length < 1) {
@@ -299,9 +303,11 @@
                 }
 
                 // Terms and condition has not been accepted
+                /*
                 if (opts.licence != 'ok') {
                     opts.errors = opts.errors + 'nolicence,'
                 }
+                */
 
 
             // Login
