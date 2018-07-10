@@ -793,6 +793,7 @@ class FacebookProductFeed {
     }
   }
 
+  /*
   private function getCategoryPath($product) {
     $category_names = array();
     $category_ids = $product->getCategoryIds();
@@ -803,4 +804,18 @@ class FacebookProductFeed {
     }
     return implode(" | ", $category_names);
   }
+  */
+    private function getCategoryPath($product) {
+        $category_names = array();
+        $category_ids = $product->getCategoryIds();
+        foreach ($category_ids as $category_id) {
+            if (array_key_exists($category_id, $this->categoryNameMap)) {
+                $cate_arr = explode('>',$this->categoryNameMap[$category_id]);
+                if(count($cate_arr)==2){
+                    $category_names[] = $cate_arr['1'];
+                }
+            }
+        }
+        return implode(" | ", $category_names);
+    }
 }
