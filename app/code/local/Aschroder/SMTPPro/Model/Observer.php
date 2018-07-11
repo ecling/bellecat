@@ -8,7 +8,7 @@
  */
 
 class Aschroder_SMTPPro_Model_Observer extends Varien_Object {
-
+    protected $_mailgun = array('sales_email_order_template','sales_email_order_guest_template');
 	public function cleanOldLogs(Varien_Event_Observer $observer)
 	{
 		$lifetime = Mage::helper('smtppro')->getLogLifetimeDays();
@@ -58,7 +58,14 @@ class Aschroder_SMTPPro_Model_Observer extends Varien_Object {
      */
     public function beforeSendTemplate($observer) {
         Mage::helper('smtppro')->log($observer->getEvent()->getMail());
-        $observer->getEvent()->getTransport()->setTransport(Mage::helper('smtppro')->getTransport());
+        //$observer->getEvent()->getTransport()->setTransport(Mage::helper('smtppro')->getTransport());
+        $template_id = $observer->getEvent()->getTemplate()->getId();
+        if(in_array($template_id,$this->_mailgun)){
+            $transport = Mage::helper('smtppro')->getMailgunTransport();
+        }else{
+            $transport = Mage::helper('smtppro')->getTransport();
+        }
+        $observer->getEvent()->getTransport()->setTransport($transport);
     }
 
     public function beforeSendQueue($observer) {

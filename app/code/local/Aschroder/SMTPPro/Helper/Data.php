@@ -196,4 +196,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->getTransport($id);
     }
 
+    public function getMailgunTransport($id = null){
+        return Mage::getModel("smtppro/transports_mailgun")->getTransport($id);
+    }
 }
