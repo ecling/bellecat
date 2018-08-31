@@ -586,7 +586,8 @@ abstract class BaseFacebook
       $this->state = md5(uniqid(mt_rand(), true));
       setcookie($name = $this->getCSRFTokenCookieName(),
                 $value = $this->state,
-                $expires = time() + 3600); // sticks for an hour
+                $expires = time() + 3600,
+                '/'); // sticks for an hour
     }
   }
 
@@ -919,9 +920,12 @@ abstract class BaseFacebook
    * @return String the current URL
    */
   protected function getCurrentUrl() {
+    /*
     $protocol = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS']=='1')
       ? 'https://'
       : 'http://';
+    */
+    $protocol = 'https://';
     $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $parts = parse_url($currentUrl);
 

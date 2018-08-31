@@ -6,8 +6,9 @@ class Magestore_Fblogin_Helper_Data extends Mage_Core_Helper_Abstract{
 	}
 	
 	public function getFbloginUrl(){
-		$isSecure = Mage::getStoreConfig('web/secure/use_in_frontend');
-		return $this->_getUrl('fblogin/index/index', array('_secure'=>$isSecure));  
+		//$isSecure = Mage::getStoreConfig('web/secure/use_in_frontend');
+        $isSecure = true;
+		return $this->_getUrl('fblogin/index/index', array('_secure'=>$isSecure));
 	}
 	
 	public function getSecretId(){

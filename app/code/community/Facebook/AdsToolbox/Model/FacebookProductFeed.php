@@ -468,7 +468,8 @@ class FacebookProductFeed {
         ->addStoreFilter($this->store_id)
         ->setPageSize($batch_max)
         ->setCurPage($count / $batch_max + 1)
-        ->addUrlRewrite();
+        ->addUrlRewrite()
+        ->setOrder('entity_id','asc');
       
       Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($products);
       Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($products);

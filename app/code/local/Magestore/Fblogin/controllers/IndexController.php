@@ -3,6 +3,7 @@ class Magestore_Fblogin_IndexController extends Mage_Core_Controller_Front_Actio
 {
     public function indexAction(){
         //if(!Mage::helper('magenotification')->checkLicenseKeyFrontController($this)){return;}
+        Mage::helper('varnishcache/cache')->setNoCacheHeader();
         $isAuth = $this->getRequest()->getParam('auth');
         $facebook = Mage::helper('fblogin')->createFacebook();
         $userId = $facebook->getUser();
