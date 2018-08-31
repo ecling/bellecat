@@ -7,7 +7,7 @@ class Magestore_Fblogin_Helper_Data extends Mage_Core_Helper_Abstract{
 	
 	public function getFbloginUrl(){
 		//$isSecure = Mage::getStoreConfig('web/secure/use_in_frontend');
-        $isSecure = true;
+        $isSecure = 1;
 		return $this->_getUrl('fblogin/index/index', array('_secure'=>$isSecure));
 	}
 	
