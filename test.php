@@ -1,4 +1,21 @@
 <?php
+$ch = curl_init();
+$opts = array(
+    CURLOPT_CONNECTTIMEOUT => 10,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 60,
+    CURLOPT_USERAGENT      => 'facebook-php-3.0',
+    CURLOPT_PROXY => 'http://127.0.0.1:1080',
+    CURLOPT_SSL_VERIFYPEER => 0,
+    CURLOPT_SSL_VERIFYHOST => 0,
+    CURLOPT_POSTFIELDS => 'client_id=238699510057866&client_secret=16da7211310eec9fff815214e57cea20&code=AQAGzEX5-3lvtgKl4icgmgTIhQE7CR8Cs2v_brnPwkAn7tKDTuuzEoLBmQ5_ux7TPXxR07J63iZ3kcOtiiUWibuZExJIYCC2EDrwqxGcSyn9KuSfwpGVFHFeaeuiEriZLFo6nF0bHYzx4dnEunNL-fYsOj_go83ffkS-TWiCgpUgE_nf6M95ofppa3Wk-KQvALlyM9vlQ9GUGgAS2GRIvWg2vvV0oBuXB5uIz5zUVQhd0Mt9By7hjm3ixE-jTRNBp-vFzZE3Auc_-DTtx0BjS1QFpZlDeQGmZFtyWVAg8EiC-nBqpt_8AeDYl0cULPCNNmLiEDm_r7kSRufQAIJh65Y3&redirect_uri=https%3A%2F%2Ftest.bellecat.com%2Fen%2Ffblogin%2Findex%2Findex%2Fauth%2F1%2F%3Fenforce_https%3D1',
+    CURLOPT_URL => 'https://graph.facebook.com/v3.1/oauth/access_token'
+);
+curl_setopt_array($ch, $opts);
+$result = curl_exec($ch);
+var_dump(json_decode($result));
+curl_close($ch);
+exit();
 include 'app/Mage.php';
 Mage::app();
 
