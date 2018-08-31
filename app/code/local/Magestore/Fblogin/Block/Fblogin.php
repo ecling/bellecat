@@ -8,8 +8,8 @@ class Magestore_Fblogin_Block_Fblogin extends Mage_Core_Block_Template
 	
 	public function getFbLoginButtonUrl(){
 		$isSecure = Mage::getStoreConfig('web/secure/use_in_frontend');
-		$authUrl = $this->getUrl('fblogin/index/index', array('_secure'=>$isSecure, 'auth'=>1));
-		
+		$authUrl = $this->getUrl('fblogin/index/index', array('_secure'=>$isSecure, 'auth'=>1,'_nosid'=>1));
+
 		$facebook = Mage::helper('fblogin')->createFacebook();
 		$loginUrl = $facebook->getLoginUrl(
 			array(

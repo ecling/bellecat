@@ -580,7 +580,9 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
             $price = $price-5;
         }
         */
-
+        if(!isset($productData['weight'])||$productData['weight']==0){
+            Mage::log($productData,null,'product.log');
+        }
         $price = Mage::helper('bcshipping')->getBasePrice($productData['purchase_price'],$productData['shipping_cost'],$productData['weight']);
 
         $productData['price'] = $price;

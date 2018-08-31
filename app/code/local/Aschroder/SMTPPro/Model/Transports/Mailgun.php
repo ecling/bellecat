@@ -6,7 +6,7 @@
  */
 
 class Aschroder_SMTPPro_Model_Transports_Mailgun extends Aschroder_SMTPPro_Model_Transports_Basesmtp {
-
+    /*
     public function getName($storeId) {
         return "Mailgun SMTP";
     }
@@ -21,6 +21,28 @@ class Aschroder_SMTPPro_Model_Transports_Mailgun extends Aschroder_SMTPPro_Model
     }
     public function getPort($storeId) {
         return '587';
+    }
+    public function getAuth($storeId) {
+        return 'login';
+    }
+    public function getSsl($storeId) {
+        return 'tls';
+    }
+    */
+    public function getName($storeId) {
+        return "Google Apps/Gmail";
+    }
+    public function getEmail($storeId) {
+        return 'no-reply@bellecat.com';
+    }
+    public function getPassword($storeId) {
+        return 'belle123';
+    }
+    public function getHost($storeId) {
+        return "smtp.gmail.com";
+    }
+    public function getPort($storeId) {
+        return 587;
     }
     public function getAuth($storeId) {
         return 'login';

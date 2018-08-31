@@ -919,9 +919,12 @@ abstract class BaseFacebook
    * @return String the current URL
    */
   protected function getCurrentUrl() {
+    /*
     $protocol = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS']=='1')
       ? 'https://'
       : 'http://';
+    */
+    $protocol = 'https://';
     $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $parts = parse_url($currentUrl);
 
