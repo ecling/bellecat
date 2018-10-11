@@ -125,12 +125,23 @@ abstract class BaseFacebook
   /**
    * Default options for curl.
    */
+  /*
   public static $CURL_OPTS = array(
     CURLOPT_CONNECTTIMEOUT => 10,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 60,
     CURLOPT_USERAGENT      => 'facebook-php-3.0',
+      CURLOPT_PROXY => 'http://127.0.0.1:1080',
+      CURLOPT_SSL_VERIFYPEER => 0,
+      CURLOPT_SSL_VERIFYHOST => 0,
   );
+  */
+    public static $CURL_OPTS = array(
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 60,
+        CURLOPT_USERAGENT      => 'facebook-php-3.0',
+    );
 
   /**
    * List of query parameters that get automatically dropped when rebuilding
@@ -533,7 +544,7 @@ abstract class BaseFacebook
 
         // CSRF state has done its job, so clear it
         $this->state = null;
-        unset($_COOKIE[$this->getCSRFTokenCookieName()]);
+        //unset($_COOKIE[$this->getCSRFTokenCookieName()]);
         return $_REQUEST['code'];
       } else {
         self::errorLog('CSRF state token does not match one provided.');
@@ -583,7 +594,8 @@ abstract class BaseFacebook
    */
   protected function establishCSRFTokenState() {
     if ($this->state === null) {
-      $this->state = md5(uniqid(mt_rand(), true));
+      //$this->state = md5(uniqid(mt_rand(), true));
+      $this->state = md5($this->getAppId());
       setcookie($name = $this->getCSRFTokenCookieName(),
                 $value = $this->state,
                 $expires = time() + 3600,
@@ -938,7 +950,7 @@ abstract class BaseFacebook
         unset($params[$key]);
       }
       if (!empty($params)) {
-        $query = '?' . http_build_query($params, null, '&');
+        //$query = '?' . http_build_query($params, null, '&');
       }
     }
 
