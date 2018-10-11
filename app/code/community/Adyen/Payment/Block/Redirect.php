@@ -128,6 +128,21 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
           </script>
         ';
 
+        $html .= '
+            <script type="text/javascript">
+            var _maq = _maq || [];
+            _maq.push([\'website_id\', \'5bbad9219f8cf01e5a0bfd32\']);
+            _maq.push([\'order_id\',\''.$order->getIncrementId().'\']);
+            _maq.push([\'order_total\',\''.number_format($order->getBaseGrandTotal(),2).'\']);
+        
+            (function() {
+                var ma = document.createElement(\'script\'); ma.type = \'text/javascript\'; ma.async = true;
+                ma.src = (\'https:\' == document.location.protocol ? \'https://\' : \'http://\') + \'www.sznewcool.com/trace.js\';
+                var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ma, s);
+            })();
+        </script> 
+        ';
+
         $html .= '</head><body class="redirect-body-adyen">';
 
 

@@ -16,6 +16,21 @@
     <?php endif; ?>
 </script>
 
+<script type="text/javascript">
+    <?php if($params['contextId']): ?>
+    var _maq = _maq || [];
+    _maq.push(['website_id', '5bbad9219f8cf01e5a0bfd32']);
+    _maq.push(['order_id','<?php echo $_order->getIncrementId(); ?>']);
+    _maq.push(['order_total','<?php echo number_format($_order->getBaseGrandTotal(),2); ?>']);
+
+    (function() {
+        var ma = document.createElement('script'); ma.type = 'text/javascript'; ma.async = true;
+        ma.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.sznewcool.com/trace.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ma, s);
+    })();
+    <?php endif; ?>
+</script>
+
 <?php if($params['contextId']): ?>
 <?php
     $content_ids = array();
