@@ -410,7 +410,7 @@ class FacebookProductFeed {
                 'all' => 59,
                 'hot' => 60,
             ],
-            'es' => [
+            'sp' => [
                 'all' => 62,
                 'hot' => 61,
             ],
