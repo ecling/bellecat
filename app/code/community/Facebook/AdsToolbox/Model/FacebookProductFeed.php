@@ -490,6 +490,9 @@ class FacebookProductFeed {
                 ->where("e.created_at>'".$date."' or e.entity_id in (".$this->in_str.")");
         */
 
+        Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
+        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
+
         $total_number_of_products = $collection->getSize();
         unset($collection);
     

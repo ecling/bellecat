@@ -6,13 +6,33 @@ class Martin_Flytcloud_TrackController extends Mage_Core_Controller_Front_Action
         $num = $this->getRequest()->getParam('num',null);
         $num = trim($num);
 
-        if(substr($num,0,1)=='F'){
+        if(substr($num,0,2)=='YT'){
+            $type = 'yt';
+        }elseif(substr($num,0,1)=='F'){
             $type = 'ft';
         }else{
             $type = '4px';
         }
 
-        if($type=='4px') {
+        if($type=='yt'){
+            $api_url =   'http://120.76.102.19:8034/LMS.API/api/WayBill/GetTrackingNumber?trackingNumber='.$num;
+            $user_num = 'C88888';
+            $api_secret = 'NMt9f54gz9M=';
+            $token = $user_num.'&'.$api_secret;
+            $headr = array();
+            $headr[] = 'Authorization: Basic '.base64_encode($token);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $api_url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headr);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec($ch);
+            curl_close($ch);
+            $result = Mage::helper('core')->jsonDecode($result);
+            if($result['ResultCode']=='0000') {
+                $track = array('type' => $type, 'info' => $result);
+                Mage::register('track', $track);
+            }
+        }elseif($type=='4px') {
             $test = Mage::getModel('flytcloud/disifang_orderonlinetools');
             $result = $test->cargoTrackingService(array($num));
 
