@@ -19,10 +19,11 @@ class Facebook_AdsToolbox_Block_InitiateCheckout
 
   public function getContentIDs() {
     $products = array();
+    $code = Mage::app()->getStore()->getCode();
     $items =
       Mage::getSingleton('checkout/session')->getQuote()->getAllVisibleItems();
     foreach ($items as $item) {
-      $products[] = $item->getProductId();
+      $products[] = $code.'_'.$item->getProductId();
     }
     return $this->arryToContentIdString($products);
   }

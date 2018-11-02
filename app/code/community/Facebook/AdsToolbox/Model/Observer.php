@@ -39,7 +39,8 @@ class Facebook_AdsToolbox_Model_Observer {
     $productId = $observer->getProduct()->getId();
     $session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
     $addToCartArray = $session->getData("fbms_add_to_cart") ?: array();
-    $addToCartArray[] = $productId;
+    $code = Mage::app()->getStore()->getCode();
+    $addToCartArray[] = $code.'_'.$productId;
     $session->setData("fbms_add_to_cart", $addToCartArray);
   }
 
