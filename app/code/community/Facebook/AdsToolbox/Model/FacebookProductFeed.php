@@ -410,7 +410,7 @@ class FacebookProductFeed {
                 'all' => 59,
                 'hot' => 60,
             ],
-            'es' => [
+            'sp' => [
                 'all' => 62,
                 'hot' => 61,
             ],
@@ -488,8 +488,8 @@ class FacebookProductFeed {
           
         $select = $collection->getSelect()
                 ->where("e.created_at>'".$date."' or e.entity_id in (".$this->in_str.")");
-        */  
-                 
+        */
+
         $total_number_of_products = $collection->getSize();
         unset($collection);
     
