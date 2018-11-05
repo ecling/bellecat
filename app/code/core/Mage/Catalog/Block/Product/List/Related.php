@@ -79,7 +79,8 @@ class Mage_Catalog_Block_Product_List_Related extends Mage_Catalog_Block_Product
         }
 
         if(!$current_category){
-            return $this;
+            $root_category = Mage::app()->getStore()->getRootCategoryId();
+            $current_category = Mage::getModel('catalog/category')->load($root_category);
         }
 
         $this->_itemCollection = $current_category->getProductCollection();
