@@ -15,7 +15,7 @@ class Martin_Flytcloud_TrackController extends Mage_Core_Controller_Front_Action
         }
 
         if($type=='yt'){
-            $api_url =   'http://120.76.102.19:8034/LMS.API/api/WayBill/GetTrackingNumber?trackingNumber='.$num;
+            $api_url =   'http://api.yunexpress.com/LMS.API/api/WayBill/GetTrackingNumber?trackingNumber='.$num;
             $user_num = 'C34260';
             $api_secret = 'FH71ONhnfTw=';
             $token = $user_num.'&'.$api_secret;
@@ -28,6 +28,7 @@ class Martin_Flytcloud_TrackController extends Mage_Core_Controller_Front_Action
             $result = curl_exec($ch);
             curl_close($ch);
             $result = Mage::helper('core')->jsonDecode($result);
+
             if($result['ResultCode']=='0000') {
                 $track = array('type' => $type, 'info' => $result);
                 Mage::register('track', $track);
