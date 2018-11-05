@@ -16,8 +16,8 @@ class Martin_Flytcloud_TrackController extends Mage_Core_Controller_Front_Action
 
         if($type=='yt'){
             $api_url =   'http://120.76.102.19:8034/LMS.API/api/WayBill/GetTrackingNumber?trackingNumber='.$num;
-            $user_num = 'C88888';
-            $api_secret = 'NMt9f54gz9M=';
+            $user_num = 'C34260';
+            $api_secret = 'FH71ONhnfTw=';
             $token = $user_num.'&'.$api_secret;
             $headr = array();
             $headr[] = 'Authorization: Basic '.base64_encode($token);
