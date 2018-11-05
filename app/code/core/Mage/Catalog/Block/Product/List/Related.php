@@ -78,6 +78,10 @@ class Mage_Catalog_Block_Product_List_Related extends Mage_Catalog_Block_Product
             }
         }
 
+        if(!$current_category){
+            return $this;
+        }
+
         $this->_itemCollection = $current_category->getProductCollection();
         $date = date('Y-m-d',time()-3600*24*30);
         $this->_itemCollection->getSelect()
