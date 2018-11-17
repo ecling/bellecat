@@ -101,6 +101,29 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
                 /></noscript>
                 ';
 
+        $html .= '
+                <script>
+                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+                n.push=n;n.loaded=!0;n.version=\'2.0\';n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+                document,\'script\',\'https://connect.facebook.net/en_US/fbevents.js\');
+                fbq(\'init\', \'355899228228662\'); // Insert your pixel ID here.
+                fbq(\'track\', \'PageView\');
+                fbq(\'track\', \'Purchase\', {
+                    source: \'magento\',
+                    version: "1.9.2.2",
+                    pluginVersion: "2.1.14",
+                    content_type: "product",
+                    content_ids: ['.$content_ids.'],
+                    value: \''. $order->getBaseGrandTotal() .'\',
+                    currency: \''. Mage::app()->getStore()->getCurrentCurrencyCode().'\'
+                  });
+                </script>
+                <noscript><img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id=355899228228662&ev=PageView&noscript=1"
+                /></noscript>
+                ';
 
         $html .= '
                 <script type="text/javascript">
