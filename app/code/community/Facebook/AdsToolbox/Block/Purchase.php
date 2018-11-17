@@ -29,8 +29,11 @@ class Facebook_AdsToolbox_Block_Purchase
 
     $this->orderData['value'] = $totalData['grand_total'];
     $this->orderData['content_ids'] = array();
+
+    $code = Mage::app()->getStore()->getCode();
+
     foreach ($allitems as $item) {
-      $this->orderData['content_ids'][] = $item->getData('product_id');
+      $this->orderData['content_ids'][] = $code.'_'.$item->getData('product_id');
     }
   }
 

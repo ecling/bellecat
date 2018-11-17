@@ -5,7 +5,15 @@ $track = Mage::registry('track');
 <section>
     <div class="track-result">
         <ul>
-            <?php if($track['type']=='ft'): ?>
+            <?php if($track['type']=='yt'): ?>
+            <?php foreach($track['info']['Item']['OrderTrackingDetails'] as $info): ?>
+                <li>
+                    <span class="a"><?php echo $info['ProcessDate']?></span>
+                    <span class="t"><?php echo $info['ProcessContent'];?></span>
+                    <span class="z"><?php echo $info['ProcessLocation']; ?></span>
+                </li>
+            <?php endforeach; ?>
+            <?php elseif($track['type']=='ft'): ?>
             <?php foreach($track['info']['z1'] as $info): ?>
                 <li>   
                     <span class="a"><?php echo $info['a']?></span>

@@ -214,7 +214,37 @@ class FacebookProductFeed {
     if (!filter_var($product_link, FILTER_VALIDATE_URL)) {
       $product_link = $this->store_url . $product_link;
     }
-    $product_link .= '?currency='.$this->currency.'&utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content=Dynamicads';
+
+    $category_ids = $product->getCategoryIds();
+
+    //判断广告ID的取值
+    $ad_id = null;
+    if(isset($this->dpa_arr[$code])){
+        if(in_array($product->getId(),$this->hot_products)&&isset($this->dpa_arr[$code]['hot'])){
+            $ad_id = $this->dpa_arr[$code]['hot'];
+        }elseif(in_array($product->getId(),$this->new_products)&&isset($this->dpa_arr[$code]['new'])){
+            $ad_id = $this->dpa_arr[$code]['new'];
+        }else{
+            $is_men = false;
+            foreach ($category_ids as $_catId){
+                if($_catId=='146'){
+                    $is_men = true;
+                    break;
+                }
+            }
+            if($is_men&&isset($this->dpa_arr[$code]['men'])){
+                $ad_id = $this->dpa_arr[$code]['men'];
+            }elseif(isset($this->dpa_arr[$code]['all'])){
+                $ad_id = $this->dpa_arr[$code]['all'];
+            }
+        }
+    }
+    if(is_null($ad_id)){
+        $ad_id = 'Dynamicads';
+    }
+
+    $product_link .= '?currency='.$this->currency.'&utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content='.$ad_id;
+    //$product_link .= '?currency='.$this->currency.'&utm_source=facebook&utm_medium=cpc&utm_campaign='.$product->getSku().'_Sam_'.$code.'&utm_content=Dynamicads';
     $items[self::ATTR_LINK] = $this->buildProductAttr(
       self::ATTR_LINK,
       $product_link);
@@ -266,7 +296,6 @@ class FacebookProductFeed {
       $this->buildProductAttr(self::ATTR_PRODUCT_TYPE,
         $this->getCategoryPath($product));
 
-    $category_ids = $product->getCategoryIds();
     foreach($category_ids as $category_id){
         if(isset($this->google_category[$category_id])){
             if(strlen($this->google_category[$category_id])>2){
@@ -357,7 +386,60 @@ class FacebookProductFeed {
         $this->google_category[$google_row['0']] = $google_row['2'];
     }
     fclose($handle);
-    
+
+
+    if($this->currency=='EUR'){
+        $this->dpa_arr = [
+            'fr' => [
+                'men' => 76,
+                'all' => 53,
+                'hot' => 54,
+                'new' => 68
+            ],
+            'nl' => [
+                'men' => 75,
+                'all' => 56,
+                'hot' => 55,
+                'new' => 67
+            ],
+            'pt' => [
+                'all' => 57,
+                'hot' => 58,
+            ],
+            'it' => [
+                'all' => 59,
+                'hot' => 60,
+            ],
+            'sp' => [
+                'all' => 62,
+                'hot' => 61,
+            ],
+            'de' => [
+                'all' => 64,
+                'hot' => 63,
+            ]
+        ];
+    }
+
+    if($this->currency=='GBP'){
+        $this->dpa_arr = [
+            'en' => [
+                'men' => 74,
+                'all' => 66,
+                'hot' => 65,
+                'new' => 69
+            ]
+        ];
+    }
+
+    if($this->currency=='USD'){
+        $this->dpa_arr = [
+            'en' => [
+                'hot' => 70
+            ]
+        ];
+    }
+
     $adapter = Mage::getModel('core/resource')->getConnection('core_read');
     
     $new_date = time()-10*24*3600;
@@ -406,8 +488,11 @@ class FacebookProductFeed {
           
         $select = $collection->getSelect()
                 ->where("e.created_at>'".$date."' or e.entity_id in (".$this->in_str.")");
-        */  
-                 
+        */
+
+        Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
+        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
+
         $total_number_of_products = $collection->getSize();
         unset($collection);
     

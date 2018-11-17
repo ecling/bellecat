@@ -1,4 +1,5 @@
 <?php
+exit();
 $ch = curl_init();
 $opts = array(
     CURLOPT_CONNECTTIMEOUT => 10,

@@ -21,7 +21,9 @@ class Martin_SalesReports_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Bl
             ->addAttributeToSelect('created_at');
 
         if($store = $this->getRequest()->getParam('store')){
-            $collection->addAttributeToFilter('store_id',$store);     
+            //$collection->addAttributeToFilter('store_id',$store);
+            $collection->getSelect()
+                ->where('main_table.store_id='.$store);
         }
         
         if($from = $this->helper('salesreports')->getParam('from')){
