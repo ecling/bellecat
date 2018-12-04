@@ -1,4 +1,5 @@
 <?php
+/*
 $ch = curl_init();
 $opts = array(
     CURLOPT_CONNECTTIMEOUT => 10,
@@ -21,6 +22,7 @@ Mage::app();
 
 $orderAmount = (int)Mage::helper('adyen')->formatAmount(0.01, 'EUR');
 var_dump($orderAmount);
+*/
 
 /*
 echo md5('linglovehuang');
@@ -48,7 +50,7 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])) {
 } else {
     $ipaddress = '';
 }
-var_dump($ipaddress);
+var_dump($_SERVER);
 
 /*
 //echo Mage::getSingleton('core/date')->gmtTimestamp('2017-11-08 02:06:42');
