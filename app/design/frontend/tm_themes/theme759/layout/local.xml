@@ -281,6 +281,9 @@
 			   Adding Tags to Tabs in Product view page
 			 -->
 			<reference name="product.info">
+				<reference name="product.info.options.wrapper.bottom">
+					<block type="core/template" name="product.info.freeshipping" template="catalog/product/view/fresshiping.phtml" after="product.info.addtocart" />
+				</reference>
 				<block type="tag/product_list" name="product_tag_list" template="tag/list.phtml">
 					<action method="addToParentGroup"><group>detailed_info</group></action>
 					<action method="setTitle" translate="value"><value>Tags</value></action>

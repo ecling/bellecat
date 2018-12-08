@@ -1,0 +1,17 @@
+<?php
+$currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
+$symbol = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();
+$rate = Mage::app()->getStore()->getCurrentCurrencyRate();
+$free = Mage::getStoreConfig('bcshipping/general/freeshipping');
+$price = $symbol.number_format($rate*$free,2);
+?>
+<p class="freeshipping"><i class="fa fa-check-circle-o" aria-hidden="true"></i><?php echo $this->__('Free Delivery over %s',$price);?></p>
+<style>
+    .freeshipping{
+        font-size: 18px;
+        color: #ed9964;
+    }
+    .freeshipping i{
+        margin-right: 10px;
+    }
+</style>

@@ -1,0 +1,33 @@
+<!--@subject {{var store.getFrontendName()}}: Voltooi uw betaling - van {{var store.getFrontendName()}} @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var store.getFrontendName()":"Store Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var place_url":"Place Order"}
+@-->
+<!--@styles
+@-->
+
+{{template config_path="design/email/header"}}
+{{inlinecss file="email-inline.css"}}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <p>geachte klant</p>
+
+            <p style="line-height: 30px;">Het artikel dat je hebt gekocht staat nog steeds in het winkelwagentje. Je hebt je betaling nog niet voltooid. Betaal zo snel mogelijk. Niet om een product met deze kleding te missen.
+                klik op de links en betaal:
+                <a href="{{var place_url}}">{{var place_url}}</a>
+            </p>
+            <p>Met een warme groet,</p>
+            <p>Een fijne dag!</p>
+            <p>Het klantenserviceteam van <a href="{{var logo_url}}">Bellecat.com</a></p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer"}}

@@ -1173,6 +1173,11 @@
                     <file>sales/shipment_update_guest.html</file>
                     <type>html</type>
                 </sales_email_shipment_comment_guest_template>
+                <sales_email_order_place_again translate="label" module="sales">
+                    <label>Order Place Again</label>
+                    <file>sales/order_place_again.html</file>
+                    <type>html</type>
+                </sales_email_order_place_again>
             </email>
         </template>
         <resources>

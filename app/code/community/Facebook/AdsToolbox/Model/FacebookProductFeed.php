@@ -317,6 +317,19 @@ class FacebookProductFeed {
         $items['custom_label_1'] = 'Not';
     }
     $items['custom_label_2'] = $product->getSku();
+
+    if(in_array($product->getId(),$this->potential)){
+        $items['custom_label_3'] = 'potential';
+    }else{
+        $items['custom_label_3'] = 'NULL';
+    }
+
+    if(in_array($product->getId(),$this->trends)){
+        $items['custom_label_4'] = 'trends';
+    }else{
+        $items['custom_label_4'] = 'NULL';
+    }
+
     return $items;
   }
 
@@ -452,8 +465,28 @@ class FacebookProductFeed {
         $this->new_products[] = $value['entity_id'];
     }
     
-    $hot_date = time()-30*24*3600;
+    $hot_date = time()-600*24*3600;
     $hot_date = date('Y-m-d H:i:s',$hot_date);
+
+    $this->potential = array();
+    $potential_result = $adapter->query("SELECT DISTINCT(e.`entity_id`) FROM `catalog_product_entity` AS e
+      LEFT JOIN `sales_flat_order_item` AS o ON e.`entity_id`=o.`product_id`
+      WHERE e.`created_at`>'$hot_date' AND o.`created_at`>='$hot_date'");
+    $potential_rows = $potential_result->fetchAll();
+    foreach ($potential_rows as $_item){
+        $this->potential[] = $_item['entity_id'];
+    }
+
+    $this->trends = array();
+    $trends_result = $adapter->query("SELECT DISTINCT(e.`entity_id`) FROM `catalog_product_entity` AS e
+      LEFT JOIN `sales_flat_order_item` AS o ON e.`entity_id`=o.`product_id`
+      LEFT JOIN `sales_flat_order` AS s ON o.`order_id`=s.`entity_id`
+      WHERE e.`created_at`>'$hot_date' AND o.`created_at`>='$hot_date' AND (s.`status`='complete' OR s.`status`='processing');");
+    $trends_row = $trends_result->fetchAll();
+    foreach ($trends_row as $_item) {
+        $this->trends[] = $_item['entity_id'];
+    }
+
     if($this->storeId){
         $stores[] = Mage::app()->getStore($this->storeId);
     }else {

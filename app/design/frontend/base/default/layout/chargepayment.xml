@@ -56,6 +56,14 @@
             <block type="chargepayment/hosted_redirect" name="chargepayment.local.hosted.redirect" template="checkoutapi/chargepayment/hosted/redirect.phtml"/>
         </reference>
     </chargepayment_api_redirect>
+    <chargepayment_order_place>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="chargepayment/hosted_redirect" name="chargepayment.local.hosted.redirect" template="checkoutapi/chargepayment/hosted/redirect.phtml"/>
+        </reference>
+    </chargepayment_order_place>
     <default>
         <reference name="head">
             <action method="addJs"><script>checkout_api/chargepayment.js</script></action>

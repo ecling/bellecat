@@ -62,6 +62,8 @@ class Aschroder_SMTPPro_Model_Observer extends Varien_Object {
         $template_id = $observer->getEvent()->getTemplate()->getId();
         if(in_array($template_id,$this->_mailgun)){
             $transport = Mage::helper('smtppro')->getMailgunTransport();
+        }elseif($template_id=='sales_email_order_place_again') {
+            $transport = Mage::helper('smtppro')->getPlaceTransport();
         }else{
             $transport = Mage::helper('smtppro')->getTransport();
         }

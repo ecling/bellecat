@@ -477,7 +477,12 @@ class CheckoutApi_ChargePayment_Model_Hosted extends Mage_Payment_Model_Method_A
      * @return mixed
      */
     private function _getQuote() {
-        return Mage::getSingleton('checkout/session')->getQuote();
+        if($order_id = Mage::app()->getRequest()->getParam('id',null)){
+            $order = Mage::getModel('sales/order')->load($order_id);
+            return Mage::getModel('sales/quote')->load($order->getQuoteId());
+        }else {
+            return Mage::getSingleton('checkout/session')->getQuote();
+        }
     }
 
     /**

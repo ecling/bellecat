@@ -1,0 +1,35 @@
+<!--@subject {{var store.getFrontendName()}}: Por favor termine su pago - desde {{var store.getFrontendName()}} @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var store.getFrontendName()":"Store Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var place_url":"Place Order"}
+@-->
+<!--@styles
+@-->
+
+{{template config_path="design/email/header"}}
+{{inlinecss file="email-inline.css"}}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <p>estimado cliente</p>
+
+            <p style="line-height: 30px;">El artículo que compraste todavía está en el carrito de compras.
+                No has completado tu pago. Paga lo antes posible.
+                No te pierdas un producto con esta ropa.
+                Por favor haga clic en los enlaces y pague:
+                <a href="{{var place_url}}">{{var place_url}}</a>
+            </p>
+            <p>Con un cordial saludo,</p>
+            <p>¡Ten un buen dia!</p>
+            <p>El equipo de atención al cliente de <a href="{{var logo_url}}">Bellecat.com</a></p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer"}}

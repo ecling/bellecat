@@ -39,6 +39,11 @@ class Martin_Bcshipping_Block_Adminhtml_Price_Grid extends Mage_Adminhtml_Block_
             'index'     => 'id'
         ));
 
+        $this->addColumn('shipping_name', array(
+            'header'    => Mage::helper('adminhtml')->__('Shipping Name'),
+            'index'     => 'shipping_name'
+        ));
+
         $this->addColumn('country', array(
             'header'    => Mage::helper('adminhtml')->__('Country'),
             'type'      => 'country',
@@ -60,6 +65,25 @@ class Martin_Bcshipping_Block_Adminhtml_Price_Grid extends Mage_Adminhtml_Block_
             'header'    => Mage::helper('adminhtml')->__('Additional Price'),
             'index'     => 'additional_price'
         ));
+
+        $this->addColumn('action',
+            array(
+                'header'    =>  Mage::helper('adminhtml')->__('Action'),
+                'width'     => '100',
+                'type'      => 'action',
+                'getter'    => 'getId',
+                'actions'   => array(
+                    array(
+                        'caption'   => Mage::helper('fblogin')->__('Edit'),
+                        'url'       => array('base'=> '*/*/edit'),
+                        'field'     => 'id'
+                    )
+                ),
+                'filter'    => false,
+                'sortable'  => false,
+                'index'     => 'stores',
+                'is_system' => true,
+            ));
 
         return parent::_prepareColumns();
     }
