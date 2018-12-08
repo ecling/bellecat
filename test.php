@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 /*
+=======
+exit();
+>>>>>>> origin/master
 $ch = curl_init();
 $opts = array(
     CURLOPT_CONNECTTIMEOUT => 10,
